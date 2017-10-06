@@ -12,9 +12,9 @@
     <tr><th> Keyword </th>
     	<th> Frequency </th></tr>
 
-    %for word, count in top_20_dict.items():
+    %for word in top_20_list:
     	<tr><th>{{word}}</th>
-    		<th>{{count}}</th></tr>
+    		<th>{{keyword_dict[word]}}</th></tr>
     %end
 
   </body>
