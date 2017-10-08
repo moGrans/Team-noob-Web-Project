@@ -2,6 +2,7 @@
 from bottle import route, template, request, run, get, post, static_file
 # import helper function in recording keyword history
 import keyword_history
+import os
 
 # homepage of the site which will request user input search content
 @get('/')
@@ -36,7 +37,7 @@ def index():
 # import static file for logo
 @route('/static/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root='/Users/melissapan/Documents/CSC326/Lab1')
+    return static_file(filepath, root=os.getcwd())
 
 # @route('/images/<filename:re:.*\.png>')
 # def send_image(filename):
