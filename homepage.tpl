@@ -64,7 +64,7 @@
 	  		<img src = "/static/test_logo.png" width = 600> 
 	  		<br>
 	  		<!-- input filed for search -->
-		    <form method="post" action="/">
+		    <form method="get" action="/">
 		        <input type='text' name='search_string'>          
 		    	<input type='submit' value='Search'>
 		    </form>
