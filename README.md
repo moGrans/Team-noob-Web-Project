@@ -7,3 +7,4 @@ A CSC326 project
 - Resolved Index  &times;
 - Lexicon         &times;
 - Document Index  &times;
+- Crawler tests   &times;
