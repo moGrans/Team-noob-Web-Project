@@ -3,12 +3,24 @@
     img {
       position: relative;
       left: 8px;
-      top: 12px;
+      top: 20px;
       margin-right: 8px;
     }
+
+    .sfbgx {
+      background-color: #fafafa;
+      border-bottom: 1px solid #ebebeb;
+      height: 80px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      min-width: 1100px;
+    }
+
     input[type=text] {
       position: relative;
-
+      top: 8px;
       width: 40%;
       padding: 8px 8px;
       margin-left: 6px;
@@ -38,7 +50,7 @@
     /*style of submit button*/
     input[type=submit] {
       position: relative;
-
+      top: 8px;
       width: 8%;
         background-color: #4CAF50;
         color: white;
@@ -56,7 +68,44 @@
         background-color: #45a049;
     }
 
+    div {
+      margin: 0;
+      padding: 0;
+    }
 
+    table {
+        position: relative;
+        left: 60;
+        top: 10;
+        border-collapse: collapse;
+        width: 70%;
+        font-family : "Myriad Web",Verdana,Helvetica,Arial,sans-serif;
+
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even){background-color: #f2f2f2}
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    h1 {
+      font-family: "Segoe UI",Arial,sans-serif;
+      font-weight: 100;
+      font-size: 25;
+    }
+
+    #search_result_head {
+      position: relative;
+      left: 60px;
+      top: 30px;
+    }
   </style>
 
   <head>
@@ -64,9 +113,10 @@
   </head>
   <body>
     <!-- display previous searched string -->
+    <div class="sfbgx"></div>
     <h1>
     <div id = "searchform" align = left>
-      <table>
+      <table id = "searchhistory">
       <a href = "http://127.0.0.1:8080" title = "Go to homepage">
         <img src = "/static/test_logo.png" width = 160></a>
       <form method="get" action="/">
@@ -76,15 +126,17 @@
     </h1>
     </div>
 
-    <p> Searched or "{{search_string}}" </P>
+    <div id = "search_result_head"
+      <p> Searched or "{{search_string}}" </p>
+    </div>
     <!-- display keywords frequency table -->
     <table id = keyword_freq_table>
     <tr><th> Keyword </th>
     	<th> Frequency </th></tr>
 
     %for word in top_20_list:
-    	<tr><th>{{word}}</th>
-    		<th>{{keyword_dict[word]}}</th></tr>
+    	<tr><td>{{word}}</td>
+    		<td>{{keyword_dict[word]}}</td></tr>
     %end
 
   </body>
