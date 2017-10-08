@@ -8,9 +8,9 @@ import os
 @get('/')
 def index():
     search_string = request.query.get('search_string')
-    if search_string == None: 
+    if search_string == None or search_string == "":
         """Home Page"""
-        return template("homepage.tpl") 
+        return template("homepage.tpl")
     else:
         """Handle the form submission"""
         search_string = request.query.get('search_string')
@@ -42,7 +42,7 @@ def server_static(filepath):
 # @route('/images/<filename:re:.*\.png>')
 # def send_image(filename):
 #     return static_file(filename, root='/path/to/image/files', mimetype='image/png')
-    
+
 # run the created web page
 if __name__ == '__main__':
 	run(reloader = True)
