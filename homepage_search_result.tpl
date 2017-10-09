@@ -137,7 +137,7 @@
 
     %for word in this_keyword_order:
       <tr><td>{{word}}</td>
-        <td>{{keyword_dict[word]}}</td></tr>
+        <td>{{this_keyword_dict[word]}}</td></tr>
     %end
     </table>
 

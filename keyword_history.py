@@ -7,14 +7,18 @@ global keyword_order
 # top_20_list: record top 20 searched keyword since launched
 # keyword_order: record all keywords in first appreance order,
 # this_keyword_order: record keyword in first appreance order, reset everytime new phrase is searched
-keyword_dict ={}
+# this_keyword_dict: record this keywords with count number
+keyword_dict = {}
 top_20_list = []
 keyword_order = []
 this_keyword_order = []
+this_keyword_dict = {}
 
 def parse_search_input(search_string):
 	# reset for new input
 	this_keyword_order[:] = []
+	this_keyword_dict.clear()
+
 	# convert input string into lowercase letter
 	# break the string into list of word and record to total_keywords
 	search_string = search_string.lower()
@@ -22,6 +26,19 @@ def parse_search_input(search_string):
 
 	# find number of times each keyword being searched
 	for word in search_keywords:
+		# this search's keyword
+		if word not in this_keyword_dict:
+			# add word and initial (1) count into dictonary of all searched keys since launched
+			this_keyword_dict[word] = 1
+			# add word into order list to record search order
+			# total keyword
+			if word not in this_keyword_order:
+				this_keyword_order.append(word)
+		else:
+			# increment the count of the searched keyword
+			this_keyword_dict[word] += 1
+		
+		# all
 		if word not in keyword_dict:
 			# add word and initial (1) count into dictonary of all searched keys since launched
 			keyword_dict[word] = 1
@@ -29,9 +46,6 @@ def parse_search_input(search_string):
 			# total keyword
 			if word not in keyword_order:
 				keyword_order.append(word)
-			# this search's keyword
-			if word not in this_keyword_order:
-				this_keyword_order.append(word)
 		else:
 			# increment the count of the searched keyword
 			keyword_dict[word] += 1

@@ -21,7 +21,7 @@ def index():
         # sort top 20 in order of count
         keyword_history.insertion_sort()
         # return result page
-        return template("homepage_search_result.tpl", keywords = keywords, top_20_list = keyword_history.top_20_list, keyword_dict = keyword_history.keyword_dict, this_keyword_order = keyword_history.this_keyword_order)
+        return template("homepage_search_result.tpl", keywords = keywords, top_20_list = keyword_history.top_20_list, keyword_dict = keyword_history.keyword_dict, this_keyword_order = keyword_history.this_keyword_order, this_keyword_dict = keyword_history.this_keyword_dict)
 
 
 # # response of the user input
