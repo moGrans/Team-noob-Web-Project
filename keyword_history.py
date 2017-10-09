@@ -14,6 +14,19 @@ keyword_order = []
 this_keyword_order = []
 this_keyword_dict = {}
 
+
+def handle_input(search_string):
+	# store search result into result history
+    parse_search_input(search_string)
+    # aquire top 20 count in searched order
+    top_20_keyword()
+    # sort top 20 in order of count
+    insertion_sort()
+    # reverse top 20 keyword
+    top_20_list.reverse()
+
+
+
 def parse_search_input(search_string):
 	# reset for new input
 	this_keyword_order[:] = []
