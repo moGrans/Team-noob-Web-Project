@@ -128,7 +128,7 @@
 
     <!-- Searched Phrase -->
     <div id = "search_result_head">
-      <p> Searched or "{{keywords}}" </p>
+      <p> Search for "{{keywords}}" </p>
     </div>
     <!-- display keywords frequency table -->
     <table id = keyword_freq_table>

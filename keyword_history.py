@@ -63,6 +63,7 @@ def parse_search_input(search_string):
 			# increment the count of the searched keyword
 			keyword_dict[word] += 1
 
+
 def insertion_sort():
 	for i in range (1,len(top_20_list)):
 		cur_word = top_20_list[i]
@@ -94,16 +95,3 @@ def top_20_keyword():
 			if keyword_dict[min_top20] < keyword_dict[word]:
 				del top_20_list[min_top20]
 				top_20_list.append(word)
-
-	# for word,count in keyword_dict.items():
-	# 	if len(top_20_dict) < 20:
-	# 		# display all searched keyword if keyword does not exceed 20
-	# 		top_20_dict[word] = count
-	# 	else:
-	# 		# find minimum key value in top 20 list
-	# 		# compare with the current count value
-	# 		# delete and replace with new frequent value
-	# 		min_index = min(top_20_dict, key=top_20_dict.get)
-	# 		if top_20_dict[min_index] < count:
-	# 			del top_20_dict[min_index]
-	# 			top_20_dict[word] = count
