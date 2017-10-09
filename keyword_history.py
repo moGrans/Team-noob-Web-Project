@@ -93,5 +93,5 @@ def top_20_keyword():
 			# compare min count keyword in top 20 list and the current word in all search
 			# remove min count keyword if current word is greater and replace with new keyword
 			if keyword_dict[min_top20] < keyword_dict[word]:
-				del top_20_list[min_top20]
+				top_20_list.remove(min_top20)
 				top_20_list.append(word)
