@@ -120,24 +120,42 @@
       <a href = "http://127.0.0.1:8080" title = "Go to homepage">
         <img src = "/static/test_logo.png" width = 160></a>
       <form method="get" action="/">
-          <input type='text' name='search_string'>
+          <input type='text' name='keywords'>
         <input type='submit' value='Search'>
       </form>
     </h1>
     </div>
 
-    <div id = "search_result_head"
-      <p> Searched or "{{search_string}}" </p>
+    <!-- Searched Phrase -->
+    <div id = "search_result_head">
+      <p> Searched or "{{keywords}}" </p>
     </div>
     <!-- display keywords frequency table -->
     <table id = keyword_freq_table>
     <tr><th> Keyword </th>
-    	<th> Frequency </th></tr>
+      <th> Frequency </th></tr>
+
+    %for word in this_keyword_order:
+      <tr><td>{{word}}</td>
+        <td>{{keyword_dict[word]}}</td></tr>
+    %end
+    </table>
+
+    
+    <!-- Top 20 -->
+    <div id = "search_result_head">
+      <p> Top 20 Keywords </p>
+    </div>
+    <!-- display keywords frequency table -->
+    <table id = keyword_freq_table>
+    <tr><th> Keyword </th>
+      <th> Frequency </th></tr>
 
     %for word in top_20_list:
-    	<tr><td>{{word}}</td>
-    		<td>{{keyword_dict[word]}}</td></tr>
+      <tr><td>{{word}}</td>
+        <td>{{keyword_dict[word]}}</td></tr>
     %end
+    </table>
 
   </body>
 </html>

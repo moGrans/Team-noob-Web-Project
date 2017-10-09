@@ -65,7 +65,7 @@
 	  		<br>
 	  		<!-- input filed for search -->
 		    <form method="get" action="/">
-		        <input type='text' name='search_string'>          
+		        <input type='text' name='keywords'>          
 		    	<input type='submit' value='Search'>
 		    </form>
 		</div>
