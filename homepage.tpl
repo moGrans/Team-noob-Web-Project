@@ -11,8 +11,8 @@
     	box-sizing: border-box;
     	font-size: 15px;
 
-		}	
-		
+		}
+
 		/*style of search box when clikced on*/
 		input[type=text]:focus {
     		border: 2px solid #a1abba;
@@ -62,13 +62,13 @@
   	<head>
       	<title>Stinky Fish</title>
   	</head>
-  	
+
   	<body>
   		<!-- top bar -->
 		<div class = "topbar" align = right>
 			<!-- sign in button -->
 			<!-- !!!!!!!!!!! need to change to google sign in api !!!!!!!!!!!!!!!! -->
-			<a href = "http://127.0.0.1:8080" title = "Sign in">
+			<a href = '/login' title = "Sign in">
 				<img src = "/static/sign_in.png" width = 80>
 			</a>
 		</div>
@@ -76,11 +76,11 @@
   		<!-- search bar and logo -->
   		<div class = "searchbar" align = center>
 	  		<!-- logo image -->
-	  		<img src = "/static/test_logo.png" width = 600> 
+	  		<img src = "/static/test_logo.png" width = 600>
 	  		<br>
 	  		<!-- input filed for search -->
 		    <form method="get" action="/">
-		        <input type='text' name='keywords'>          
+		        <input type='text' name='keywords'>
 		    	<input type='submit' value='Search'>
 		    </form>
 		</div>
