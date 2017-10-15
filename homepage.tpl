@@ -46,9 +46,14 @@
     		background-color: #45a049;
 		}
 
-		div {
+		.searchbar {
 			margin-top: 15%;
 			/*position: fixed;*/
+		}
+
+		.bottomart {
+			bottom: 0;
+			position: absolute;
 		}
 	</style>
 
@@ -59,7 +64,17 @@
   	</head>
   	
   	<body>
-  		<div align = center>
+  		<!-- top bar -->
+		<div class = "topbar" align = right>
+			<!-- sign in button -->
+			<!-- !!!!!!!!!!! need to change to google sign in api !!!!!!!!!!!!!!!! -->
+			<a href = "http://127.0.0.1:8080" title = "Sign in">
+				<img src = "/static/sign_in.png" width = 80>
+			</a>
+		</div>
+
+  		<!-- search bar and logo -->
+  		<div class = "searchbar" align = center>
 	  		<!-- logo image -->
 	  		<img src = "/static/test_logo.png" width = 600> 
 	  		<br>
@@ -69,5 +84,14 @@
 		    	<input type='submit' value='Search'>
 		    </form>
 		</div>
+
+		<!-- wave design -->
+		<div class = "bottomart" align = center>
+			<img src = "/static/wave_1.png" width = 100%>
+		</div>
+
+
+
+
   	</body>
 </html>

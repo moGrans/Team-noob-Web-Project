@@ -112,7 +112,7 @@
       <title>Stinky Fish: search result</title>
   </head>
   <body>
-    <!-- display previous searched string -->
+    <!-- top right search bar -->
     <div class="sfbgx"></div>
     <h1>
     <div id = "searchform" align = left>
