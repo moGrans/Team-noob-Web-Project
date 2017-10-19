@@ -6,12 +6,12 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import flow_from_clientsecrets
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
-from beaker.middleware import SessionMiddleware
 import httplib2
+import os
 
 # import helper function in recording keyword history
 import keyword_history
-import os
+
 
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
@@ -31,17 +31,22 @@ wsgi_app = SessionMiddleware(app(), session_opts)
 def index():
     ss = request.environ.get('beaker.session')
     print(ss.get('user', None))
+    # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
     if keywords == None or keywords == "":
-        """Home Page"""
+        # Home Page 
         return template("homepage.tpl")
     else:
-        """Handle the form submission"""
+        # Handle the form submission
         keywords = request.query.get('keywords')
-        # handle search keyword input
+        # Handle search keyword input
         keyword_history.handle_input(keywords)
-        # return result page
-        return template("homepage_search_result.tpl", keywords = keywords, top_20_list = keyword_history.top_20_list, keyword_dict = keyword_history.keyword_dict, this_keyword_order = keyword_history.this_keyword_order, this_keyword_dict = keyword_history.this_keyword_dict)
+        # Return result page
+        return template("homepage_search_result.tpl", keywords = keywords, 
+                                                    top_20_list = keyword_history.top_20_list, 
+                                                    keyword_dict = keyword_history.keyword_dict, 
+                                                    this_keyword_order = keyword_history.this_keyword_order, 
+                                                    this_keyword_dict = keyword_history.this_keyword_dict)
 
 # google login
 @route('/login')
@@ -49,49 +54,60 @@ def google_login():
         ss = request.environ.get('beaker.session')
         print(ss.get('user', None))
         if ss.get('user', None) is None:
+            # create flow from json and stores client id, client secret and other parameter
             flow = flow_from_clientsecrets(
                     'client_secrets.json',
                     scope='https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email',
                     redirect_uri='http://localhost:8080/redirect')
+            # generate authorization server URI
             uri = flow.step1_get_authorize_url()
+            # redirect to google sign in prompt
             redirect(str(uri))
         else:
+            # already sign in
             redirect('/')
 
 # redirect page
 @route('/redirect')
 def redirect_page():
+    # retrive one time code attacted to query string after browser is redireced
     code = request.query.get("code", "")
     if code == "":
 		redirect('/')
+    # exchange one time code for access token by submitting http request
     flow = OAuth2WebServerFlow(client_id = CLIENT_ID,
         client_secret = CLIENT_SECRET,
         scope = SCOPE,
         redirect_uri = REDIRECT_URI)
+    # exchanges an authorization code for a Credentials
     credentials = flow.step2_exchange(code)
     token = credentials.id_token['sub']
+    # apply necessary credential headers to all requests made by an httplib2.Http instance
     http = httplib2.Http()
     http = credentials.authorize(http)
     # Get user email
     users_service = build('oauth2', 'v2', http = http)
     user_document = users_service.userinfo().get().execute()
     user_email = user_document['email']
-
+    # store log in user name by user email in a beaker session
     ss = request.environ.get('beaker.session')
     ss['user'] = user_email
     ss.save()
+    # redirect back to home page
     redirect('/')
 
 # log out
 @route('/logout')
 def log_out():
     ss = request.environ.get('beaker.session')
+    # remove user sign in session from beaker
     ss.pop('user', None)
     ss.save()
+    # redirect back to homepage
     redirect('/')
 
 
-# import static file for logo
+# import static file for logos/images
 @route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root=os.getcwd())

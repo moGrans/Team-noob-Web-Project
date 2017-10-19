@@ -69,14 +69,14 @@
 			<!-- sign in button -->
 			<!-- !!!!!!!!!!! need to change to google sign in api !!!!!!!!!!!!!!!! -->
 			<a href = '/login' title = "Sign in">
-				<img src = "/static/sign_in.png" width = 80>
+				<img src = "/static/image/sign_in.png" width = 80>
 			</a>
 		</div>
 
   		<!-- search bar and logo -->
   		<div class = "searchbar" align = center>
 	  		<!-- logo image -->
-	  		<img src = "/static/test_logo.png" width = 600>
+	  		<img src = "/static/image/test_logo.png" width = 600>
 	  		<br>
 	  		<!-- input filed for search -->
 		    <form method="get" action="/">
@@ -87,7 +87,7 @@
 
 		<!-- wave design -->
 		<div class = "bottomart" align = center>
-			<img src = "/static/wave_1.png" width = 100%>
+			<img src = "/static/image/wave_1.png" width = 100%>
 		</div>
 
 
