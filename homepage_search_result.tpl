@@ -135,27 +135,28 @@
     <tr><th> Keyword </th>
       <th> Frequency </th></tr>
 
-    %for word in this_keyword_order:
+    %for word in this_search.kw_order:
       <tr><td>{{word}}</td>
-        <td>{{this_keyword_dict[word]}}</td></tr>
+        <td>{{this_search.kw_dict[word]}}</td></tr>
     %end
     </table>
 
     
-    <!-- Top 20 -->
-    <div id = "search_result_head">
-      <p> Top 20 Keywords </p>
-    </div>
-    <!-- display keywords frequency table -->
-    <table id = keyword_freq_table>
-    <tr><th> Keyword </th>
-      <th> Frequency </th></tr>
+    <!-- Display Top 20 if log in -->
+    %if ss_user is not None:
+      <div id = "search_result_head">
+        <p> Top 20 Keywords </p>
+      </div>
+      <!-- display keywords frequency table -->
+      <table id = keyword_freq_table>
+      <tr><th> Keyword </th>
+        <th> Frequency </th></tr>
 
-    %for word in top_20_list:
-      <tr><td>{{word}}</td>
-        <td>{{keyword_dict[word]}}</td></tr>
+      %for word in top_20_list:
+        <tr><td>{{word}}</td>
+          <td>{{user_kw_his[ss_user].kw_dict[word]}}</td></tr>
+      %end
+      </table>
     %end
-    </table>
-
   </body>
 </html>

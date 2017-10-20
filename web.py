@@ -1,4 +1,5 @@
 import bottle
+import redis
 from bottle import route, Bottle, template, request, run, get, post, static_file, app, redirect
 from beaker.middleware import SessionMiddleware
 from oauth2client import client
@@ -11,8 +12,14 @@ import os
 
 # import helper function in recording keyword history
 import keyword_history
+import kw_history
 
+# redis
+userdb = redis.StrictRedis(host='localhost', port=6379, db=0)
+userdb.set("name","melissa")
+print userdb.get("name")
 
+# Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
@@ -34,7 +41,6 @@ def index():
     ss = request.environ.get('beaker.session')
     ss_user = ss.get('user', None)
     print(ss.get('user', None))
-    print (ss)
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
 
@@ -45,13 +51,16 @@ def index():
         # Handle the form submission
         keywords = request.query.get('keywords')
         # Handle search keyword input
-        keyword_history.handle_input(keywords)
+        this_search = kw_history.handle_input(keywords,ss_user)
+
+        print this_search
         # Return result page
         return template("homepage_search_result.tpl", keywords = keywords, 
-                                                    top_20_list = keyword_history.top_20_list, 
-                                                    keyword_dict = keyword_history.keyword_dict, 
-                                                    this_keyword_order = keyword_history.this_keyword_order, 
-                                                    this_keyword_dict = keyword_history.this_keyword_dict)
+                                                    this_search = this_search,
+                                                    ss = ss,
+                                                    ss_user = ss_user,
+                                                    top_20_list = kw_history.top_20_list,                                           
+                                                    user_kw_his = kw_history.user_kw_his)
 
 # google login
 @route('/login')
