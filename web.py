@@ -18,6 +18,7 @@ CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
 REDIRECT_URI = 'http://localhost:8080/redirect'
 
+# configure beaker session
 session_opts = {
     'session.type': 'file',
     'session.cookie_expires': 86400,
@@ -29,13 +30,17 @@ wsgi_app = SessionMiddleware(app(), session_opts)
 # homepage of the site which will request user input search content
 @get('/')
 def index():
+    # make a lazy session instance available every request request.environ.get
     ss = request.environ.get('beaker.session')
+    ss_user = ss.get('user', None)
     print(ss.get('user', None))
+    print (ss)
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
-    if keywords == None or keywords == "":
+
+    if keywords is None or keywords is "":
         # Home Page 
-        return template("homepage.tpl")
+        return template("homepage.tpl", ss_user = ss_user, ss = ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
@@ -72,7 +77,7 @@ def google_login():
 def redirect_page():
     # retrive one time code attacted to query string after browser is redireced
     code = request.query.get("code", "")
-    if code == "":
+    if code is "":
 		redirect('/')
     # exchange one time code for access token by submitting http request
     flow = OAuth2WebServerFlow(client_id = CLIENT_ID,
@@ -88,10 +93,12 @@ def redirect_page():
     # Get user email
     users_service = build('oauth2', 'v2', http = http)
     user_document = users_service.userinfo().get().execute()
+    print (user_document)
     user_email = user_document['email']
-    # store log in user name by user email in a beaker session
+    # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
     ss['user'] = user_email
+    ss['picture'] = user_document['picture']
     ss.save()
     # redirect back to home page
     redirect('/')
@@ -102,6 +109,7 @@ def log_out():
     ss = request.environ.get('beaker.session')
     # remove user sign in session from beaker
     ss.pop('user', None)
+    ss.pop('picture',None)
     ss.save()
     # redirect back to homepage
     redirect('/')

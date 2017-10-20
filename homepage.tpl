@@ -55,6 +55,11 @@
 			bottom: 0;
 			position: absolute;
 		}
+
+		.profilepic {
+			border-radius: 50%;
+			overflow: hidden;
+		}
 	</style>
 
 
@@ -65,12 +70,20 @@
 
   	<body>
   		<!-- top bar -->
-		<div class = "topbar" align = right>
-			<!-- sign in button -->
-			<!-- !!!!!!!!!!! need to change to google sign in api !!!!!!!!!!!!!!!! -->
+		<div class = "topbar" align = right>	
+			<!-- user have not sign into a google account -->
+			%if ss_user is None:
 			<a href = '/login' title = "Sign in">
+				<!-- display sign in button that will link to sign in page -->
 				<img src = "/static/image/sign_in.png" width = 80>
 			</a>
+			%end
+			<!-- user log in to google account -->
+			%if ss_user is not None:
+			<a href = '/logout' title = "Log out">	
+				<img src = {{ss['picture']}} width = 50 class = "profilepic">
+			</a>
+			%end
 		</div>
 
   		<!-- search bar and logo -->
