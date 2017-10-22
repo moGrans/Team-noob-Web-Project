@@ -22,8 +22,11 @@ REDIRECT_URI = 'http://localhost:8080/redirect'
 
 # configure beaker session
 session_opts = {
+<<<<<<< HEAD
     'session.type': 'file',
     'session.cookie_expires': False,
+=======
+>>>>>>> b4f5105075977dcb0374a32fe52484a057298947
     'session.data_dir': './data',
     'session.auto': True
 }
@@ -46,6 +49,7 @@ def index():
         # Get user's keyword history on beaker
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
         # Handle search keyword input
+<<<<<<< HEAD
         results = kw_his.handle_input(keywords,ss_user,user_cookie)
         this_search,user_kw,top_20_list = results[0], results[1], results[2]
         # Store new user-based keyword dictionary
@@ -85,18 +89,17 @@ def google_login():
 # redirect page
 @route('/redirect')
 def redirect_page():
-    # retrive one time code attacted to query string after browser is redireced
     code = request.query.get("code", "")
     if code is "":
-		redirect('/')
+        redirect('/')
     # exchange one time code for access token by submitting http request
-    flow = OAuth2WebServerFlow(client_id = CLIENT_ID,
-        client_secret = CLIENT_SECRET,
-        scope = SCOPE,
-        redirect_uri = REDIRECT_URI)
+    flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
+                               scope=SCOPE,
+                               client_secret=CLIENT_SECRET,
+                               redirect_uri=REDIRECT_URI)
     # exchanges an authorization code for a Credentials
     credentials = flow.step2_exchange(code)
-    token = credentials.id_token['sub']
+
     # apply necessary credential headers to all requests made by an httplib2.Http instance
     http = httplib2.Http()
     http = credentials.authorize(http)
@@ -104,34 +107,60 @@ def redirect_page():
     users_service = build('oauth2', 'v2', http = http)
     user_document = users_service.userinfo().get().execute()
     user_email = user_document['email']
+<<<<<<< HEAD
     # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
     # determine if session cookie for uSserid exist
     print "ss is:"
     print (ss)
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5200610a3d75e9f2500247c66ec8b973ada513a0
+
+    # store log in information in a beaker session
+    ss = request.environ.get('beaker.session')
+>>>>>>> b4f5105075977dcb0374a32fe52484a057298947
     ss['user'] = user_email
     ss['picture'] = user_document['picture']
     ss.save()
     # redirect back to home page
     redirect('/')
 
+
 # log out
 @route('/logout')
 def log_out():
     ss = request.environ.get('beaker.session')
     # remove user sign in session from beaker
+<<<<<<< HEAD
     # ss.pop('user', None)
     # ss.pop('picture',None)
     # ss.save()
     # redirect back to homepage
     redirect('/')
+=======
+    ss.pop('user', None)
+    ss.pop('picture', None)
 
+    ss.save()
+>>>>>>> b4f5105075977dcb0374a32fe52484a057298947
+
+    try:
+        response = requests.post(REVOKE_URL,
+                                 params={'token': token},
+                                 headers={'content-type': 'application/x-www-form-urlencoded'})
+    except:
+        print "Went wrong when getting response from REVOKE url"
+
+    redirect('/')
 
 # import static file for logos/images
 @route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root=os.getcwd())
 
+
 # run the created web page
 if __name__ == '__main__':
-	run(app = wsgi_app, port = 8080, reloader = True)
+    run(app=wsgi_app, port=8080, reloader=True)
