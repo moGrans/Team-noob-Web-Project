@@ -175,7 +175,7 @@
 
       %for word in top_20_list:
         <tr><td>{{word}}</td>
-          <td>{{user_kw_his[ss_user].kw_dict[word]}}</td></tr>
+          <td>{{user_kw.kw_dict[word]}}</td></tr>
       %end
       </table>
     %end
