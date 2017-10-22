@@ -106,6 +106,11 @@
       left: 60px;
       top: 30px;
     }
+
+    #searchform {
+      float = left;
+      margin-right: 10px;
+    }
   </style>
 
   <head>
@@ -123,8 +128,24 @@
           <input type='text' name='keywords'>
         <input type='submit' value='Search'>
       </form>
+
+      <!-- google sign in/ sign out -->
+      %if ss_user is None:
+      <a href = '/login' title = "Sign in" style = "float:right">
+        <!-- display sign in button that will link to sign in page -->
+        <img src = "/static/image/sign_in.png" width = 80>
+      </a>
+      %end
+      %if ss_user is not None:         
+        <a href='/logout' title = "sign out">
+          <img src = "/static/image/sign_out.png" width = 80 style = "float:right">
+        </a>
+        <img src = {{ss['picture']}} width = 45 style = "float:right;border-radius: 50%;overflow: hidden;">
+      %end
     </h1>
-    </div>
+    
+  
+
 
     <!-- Searched Phrase -->
     <div id = "search_result_head">
