@@ -122,7 +122,7 @@
     <h1>
     <div id = "searchform" align = left>
       <table id = "searchhistory">
-      <a href = "http://127.0.0.1:8080" title = "Go to homepage">
+      <a href = "/" title = "Go to homepage">
         <img src = "/static/image/test_logo.png" width = 160></a>
       <form method="get" action="/">
           <input type='text' name='keywords'>
