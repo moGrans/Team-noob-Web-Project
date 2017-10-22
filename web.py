@@ -13,11 +13,6 @@ import os
 # import helper function in recording keyword history
 import kw_his
 
-# # redis
-# userdb = redis.StrictRedis(host='localhost', port=6379, db=0)
-# userdb.set("name","melissa")
-# print userdb.get("name")
-
 # Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
@@ -29,7 +24,7 @@ token = None
 
 # configure beaker session
 session_opts = {
-    'session.type': 'file',
+    'session.type': 'cookie',
     'session.cookie_expires': False,
     'session.data_dir': './data',
     'session.auto': True
@@ -44,6 +39,7 @@ def index():
     # make a lazy session instance available every request request.environ.get
     ss = request.environ.get('beaker.session')
     ss_user = ss.get('user', None)
+    print(ss.get('user', None))
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
     if keywords is None or keywords is "":
@@ -52,8 +48,6 @@ def index():
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
-        # Get user's keyword history on beaker
-        user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
         # Handle search keyword input
         results = kw_his.handle_input(keywords,ss_user,user_cookie)
         this_search,user_kw,top_20_list = results[0], results[1], results[2]
@@ -61,12 +55,12 @@ def index():
         ss[ss_user] = user_kw
         ss.save()
         # Return result page
-        return template("homepage_search_result.tpl", keywords = keywords, 
-                                                    this_search = this_search,
-                                                    ss = ss,
-                                                    ss_user = ss_user,
-                                                    top_20_list = top_20_list,                                           
-                                                    user_kw = user_kw)
+        return template("homepage_search_result.tpl", keywords=keywords,
+                        this_search=this_search,
+                        ss=ss,
+                        ss_user=ss_user,
+                        top_20_list=kw_history.top_20_list,
+                        user_kw_his=kw_history.user_kw_his)
 
 
 # google login
@@ -123,12 +117,6 @@ def redirect_page():
     user_email = user_document['email']
     # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
-    # determine if session cookie for uSserid exist
-    print "ss is:"
-    print (ss)
-
-    # store log in information in a beaker session
-    ss = request.environ.get('beaker.session')
     ss['user'] = user_email
     ss['picture'] = user_document['picture']
     ss.save()
@@ -141,12 +129,9 @@ def redirect_page():
 def log_out():
     ss = request.environ.get('beaker.session')
     # remove user sign in session from beaker
-
     ss.pop('user', None)
     ss.pop('picture', None)
-
     ss.save()
-
     try:
         response = requests.post(REVOKE_URL,
                                  params={'token': token},
