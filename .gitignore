@@ -1,5 +1,7 @@
 *.pyc
+*.csv
 *.xml
 *.xml
 *.xml
+*.iml
 .idea/workspace.xml
