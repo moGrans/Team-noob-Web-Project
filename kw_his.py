@@ -20,8 +20,8 @@ class searchKW:
 		search_string = search_string.lower().split()
 		self.kw_order = []
 		self.kw_dict = {}
-		self.login = False										
-
+		self.login = False	
+		self.recent = []								
 		# search keyword count dictionary initialization
 		for word in search_string:
 			if word not in self.kw_dict:
@@ -32,6 +32,10 @@ class searchKW:
 			else:
 				# increment search count in dictionary
 				self.kw_dict[word] += 1
+		search_string.reverse()
+		self.recent = search_string[:10]
+		print "recent edit in __init__: self.recent = ",self.recent
+			
 
 	# add keywords from new search
 	def __add__(self,other):		
@@ -46,6 +50,10 @@ class searchKW:
 			else:
 				# update count
 				self.kw_dict[word] = self.kw_dict[word] + other.kw_dict[word]
+		# update recent word list
+		recent = other.recent + self.recent
+		self.recent = recent[:10]
+		print "recent edit in __add__: self.recent = ",self.recent
 		return self
 
 	# destructure to clear up variables
@@ -53,6 +61,7 @@ class searchKW:
 		#self.search_string[:] = []
 		self.kw_order[:] = []
 		self.kw_dict.clear()
+		self.recent[:] = []
 
 #
 # Function Implementation
@@ -65,13 +74,8 @@ def handle_input(search_string,ss_user,user_cookie):
     # user did not log in will not display and store keyword history
     if ss_user is None:
     	return [this_search,searchKW(),[]]
-    # store by user id
-    if user_cookie.login:
-    	# new user id
-    	user_kw = this_search
-    else:
-    	# user id already exist, add new search to previous search history
-    	user_kw = user_cookie + this_search
+    # user id already exist, add new search to previous search history
+    user_kw = user_cookie + this_search
     # sort top 20 in order of count
     top_20_list = sort_rankings(user_kw)
 

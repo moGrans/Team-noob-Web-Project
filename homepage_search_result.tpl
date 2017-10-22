@@ -122,7 +122,7 @@
     <h1>
     <div id = "searchform" align = left>
       <table id = "searchhistory">
-      <a href = "/" title = "Go to homepage">
+      <a href = "http://127.0.0.1:8080" title = "Go to homepage">
         <img src = "/static/image/test_logo.png" width = 160></a>
       <form method="get" action="/">
           <input type='text' name='keywords'>
@@ -178,6 +178,18 @@
           <td>{{user_kw.kw_dict[word]}}</td></tr>
       %end
       </table>
+    %end
+
+    <!-- 10 recent search keyword for google user-->
+    %if ss_user is not None:
+      <div id = "search_result_head">
+        <p> Recent 10 Keywords </p>
+      </div> 
+      %for word in ss[ss_user].recent: 
+        <table id = keyword_freq_table>
+          <tr><td>{{word}}</td></tr>
+      % end
+        </table>
     %end
   </body>
 </html>

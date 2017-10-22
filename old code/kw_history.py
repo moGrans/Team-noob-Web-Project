@@ -57,32 +57,29 @@ class searchKW:
 #
 # Variable Delcaration
 #
-user_kw_his = {}			# store searchKW by userid
-top_20_list = []			# store top 20 keyword search of a specific userid
+user_kw_his = {}  # store searchKW by userid
+top_20_list = []  # store top 20 keyword search of a specific userid
+
 
 #
 # Function Implementation
 #
 
 # handle raw search string from get method
-<<<<<<< HEAD
-def handle_input(search_string,ss_user,user_cookie):
-	# store search result into result history
-=======
+
 def handle_input(search_string, ss_user):
     # store search result into result history
->>>>>>> b4f5105075977dcb0374a32fe52484a057298947
     this_search = searchKW(search_string)
     # user did not log in will not display and store keyword history
     if ss_user is None:
-    	return this_search
+        return this_search
     # store by user id
     if ss_user not in user_kw_his:
-    	# new user id
-    	user_kw_his[ss_user] = this_search
+        # new user id
+        user_kw_his[ss_user] = this_search
     else:
-    	# user id already exist, add new search to previous search history
-    	user_kw_his[ss_user] = user_kw_his[ss_user] + this_search
+        # user id already exist, add new search to previous search history
+        user_kw_his[ss_user] = user_kw_his[ss_user] + this_search
     # find top 20 search count for ss_user
     top_20(ss_user)
     # sort top 20 in order of count
@@ -95,45 +92,39 @@ def handle_input(search_string, ss_user):
 
 # store search history by user name
 def top_20(ss_user):
-	# delete old result
-	top_20_list[:] = []
-	
-	# user specific (syntatic)
-	kdict = user_kw_his[ss_user].kw_dict
-	klist = user_kw_his[ss_user].kw_order
-	# loop through all keyword since launched
-	min_20 = klist[0]	# initialize min count in top 20 keyword 
-	for word in klist:
-		# include keyword if top 20 list is not full (20 elements)
-		if len(top_20_list) < 20:
-			top_20_list.append(word)
-			# update min count in top 20 list
-			min_20 = min_20 if kdict[min_20] < kdict[word] else word
-		elif kdict[min_20] < kdict[word]:
-			# replace min_20 if word has more count
-			top_20_list.remove(min_20)
-			top_20_list.append(word)
-			# update new min
-			min_20 = top_20_list[0]
-			for word in top_20_list:
-				min_20 = min_20 if kdict[min_20] < kdict[word] else word
+    # delete old result
+    top_20_list[:] = []
+
+    # user specific (syntatic)
+    kdict = user_kw_his[ss_user].kw_dict
+    klist = user_kw_his[ss_user].kw_order
+    # loop through all keyword since launched
+    min_20 = klist[0]  # initialize min count in top 20 keyword
+    for word in klist:
+        # include keyword if top 20 list is not full (20 elements)
+        if len(top_20_list) < 20:
+            top_20_list.append(word)
+            # update min count in top 20 list
+            min_20 = min_20 if kdict[min_20] < kdict[word] else word
+        elif kdict[min_20] < kdict[word]:
+            # replace min_20 if word has more count
+            top_20_list.remove(min_20)
+            top_20_list.append(word)
+            # update new min
+            min_20 = top_20_list[0]
+            for word in top_20_list:
+                min_20 = min_20 if kdict[min_20] < kdict[word] else word
 
 
 # insertion_sort the top 20 keyword by count
 def insertion_sort(ss_user):
-	# user specific
-	kdict = user_kw_his[ss_user].kw_dict
-	# insertion_sort
-	for i in range (1,len(top_20_list)):
-		cur_word = top_20_list[i]
-		pos = i
-		while pos > 0 and kdict[top_20_list[pos - 1]] > kdict[top_20_list[i]]:
-			top_20_list[pos] = top_20_list[pos - 1]
-			pos = pos - 1
-		top_20_list[pos] = cur_word 
-
-
-
-
-
-
+    # user specific
+    kdict = user_kw_his[ss_user].kw_dict
+    # insertion_sort
+    for i in range(1, len(top_20_list)):
+        cur_word = top_20_list[i]
+        pos = i
+        while pos > 0 and kdict[top_20_list[pos - 1]] > kdict[top_20_list[i]]:
+            top_20_list[pos] = top_20_list[pos - 1]
+            pos = pos - 1
+        top_20_list[pos] = cur_word

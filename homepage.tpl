@@ -107,5 +107,13 @@
 		    </form>
 		</div>
 
+		<!-- 10 recent search keyword for google user-->
+		%if ss_user is not None:
+			<table align = center>
+			% for word in ss[ss_user].recent:
+				<tr><td>{{word}}</td></tr>
+			%end
+			</table>
+		%end
   	</body>
 </html>
