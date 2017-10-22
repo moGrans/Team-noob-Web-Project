@@ -42,6 +42,7 @@ def index():
     print(ss.get('user', None))
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
+
     if keywords is None or keywords is "":
         # Home Page
         return template("homepage.tpl", ss_user=ss_user, ss=ss)

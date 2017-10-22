@@ -66,7 +66,10 @@ top_20_list = []  # store top 20 keyword search of a specific userid
 #
 
 # handle raw search string from get method
+<<<<<<< HEAD:old code/kw_history.py
 
+=======
+>>>>>>> 9d1418763974d06d1b730825fa0a116feeaf109c:kw_history.py
 def handle_input(search_string, ss_user):
     # store search result into result history
     this_search = searchKW(search_string)
