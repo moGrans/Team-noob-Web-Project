@@ -14,14 +14,12 @@ import os
 import keyword_history
 import kw_history
 
-<<<<<<< HEAD
 # # redis
 # userdb = redis.StrictRedis(host='localhost', port=6379, db=0)
 # userdb.set("name","melissa")
 # print userdb.get("name")
 
-=======
->>>>>>> 5200610a3d75e9f2500247c66ec8b973ada513a0
+
 # Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
@@ -33,6 +31,8 @@ token = None
 
 # configure beaker session
 session_opts = {
+    'session.type': 'cookie',
+    'session.cookie_expires': False,
     'session.data_dir': './data',
     'session.auto': True
 }
@@ -57,12 +57,13 @@ def index():
         # Handle the form submission
         keywords = request.query.get('keywords')
         # Handle search keyword input
-<<<<<<< HEAD
+
         this_search = kw_history.handle_input(keywords, ss_user)
 
         print this_search
-=======
->>>>>>> 5200610a3d75e9f2500247c66ec8b973ada513a0
+
+        this_search = kw_history.handle_input(keywords,ss_user)
+
         # Return result page
         return template("homepage_search_result.tpl", keywords=keywords,
                         this_search=this_search,
@@ -122,14 +123,20 @@ def redirect_page():
     # Get user email
     users_service = build('oauth2', 'v2', http=http)
     user_document = users_service.userinfo().get().execute()
-    print (user_document)
     user_email = user_document['email']
-<<<<<<< HEAD
-=======
->>>>>>> 5200610a3d75e9f2500247c66ec8b973ada513a0
+
+    # test if session already set up of this user_email
 
     # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
+    print ss.get_by_id(user_email)
+    # determine if session cookie for userid exist
+
+
+
+
+    print "ss is:"
+    print (ss)
     ss['user'] = user_email
     ss['picture'] = user_document['picture']
     ss.save()
