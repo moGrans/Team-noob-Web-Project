@@ -60,8 +60,8 @@ def index():
                         this_search=this_search,
                         ss=ss,
                         ss_user=ss_user,
-                        top_20_list=kw_history.top_20_list,
-                        user_kw_his=kw_history.user_kw_his)
+                        top_20_list=top_20_list,
+                        user_kw=kw_his)
 
 
 # google login
