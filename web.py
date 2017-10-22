@@ -13,13 +13,17 @@ import os
 # import helper function in recording keyword history
 import keyword_history
 import kw_history
+import kw_his
 
+<<<<<<< HEAD
 # # redis
 # userdb = redis.StrictRedis(host='localhost', port=6379, db=0)
 # userdb.set("name","melissa")
 # print userdb.get("name")
 
 
+=======
+>>>>>>> e18b88e8a50a734ce81693ad0c99045596b1d40b
 # Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
@@ -31,8 +35,16 @@ token = None
 
 # configure beaker session
 session_opts = {
+<<<<<<< HEAD
     'session.type': 'cookie',
     'session.cookie_expires': False,
+=======
+<<<<<<< HEAD
+    'session.type': 'file',
+    'session.cookie_expires': False,
+=======
+>>>>>>> b4f5105075977dcb0374a32fe52484a057298947
+>>>>>>> e18b88e8a50a734ce81693ad0c99045596b1d40b
     'session.data_dir': './data',
     'session.auto': True
 }
