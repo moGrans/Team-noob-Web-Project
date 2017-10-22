@@ -1,3 +1,5 @@
+import operator
+
 #
 # Class Definition
 #
@@ -17,7 +19,8 @@ class searchKW:
 		#self.search_string = search_string.lower().split()		# store searched string using list by keyword in lower case
 		search_string = search_string.lower().split()
 		self.kw_order = []
-		self.kw_dict = {}										
+		self.kw_dict = {}
+		self.login = False										
 
 		# search keyword count dictionary initialization
 		for word in search_string:
@@ -51,13 +54,6 @@ class searchKW:
 		self.kw_order[:] = []
 		self.kw_dict.clear()
 
-
-#
-# Variable Delcaration
-#
-user_kw_his = {}			# store searchKW by userid
-top_20_list = []			# store top 20 keyword search of a specific userid
-
 #
 # Function Implementation
 #
@@ -68,63 +64,29 @@ def handle_input(search_string,ss_user,user_cookie):
     this_search = searchKW(search_string)
     # user did not log in will not display and store keyword history
     if ss_user is None:
-    	return this_search
+    	return [this_search,searchKW(),[]]
     # store by user id
-    if ss_user not in user_kw_his:
+    if user_cookie.login:
     	# new user id
-    	user_kw_his[ss_user] = this_search
+    	user_kw = this_search
     else:
     	# user id already exist, add new search to previous search history
-    	user_kw_his[ss_user] = user_kw_his[ss_user] + this_search
-    # find top 20 search count for ss_user
-    top_20(ss_user)
+    	user_kw = user_cookie + this_search
     # sort top 20 in order of count
-    insertion_sort(ss_user)
-    # reverse to make desending order 
-    top_20_list.reverse()
+    top_20_list = sort_rankings(user_kw)
+
     # return the search parse for this specific search
-    return this_search
-
-
-# store search history by user name
-def top_20(ss_user):
-	# delete old result
-	top_20_list[:] = []
-	
-	# user specific (syntatic)
-	kdict = user_kw_his[ss_user].kw_dict
-	klist = user_kw_his[ss_user].kw_order
-	# loop through all keyword since launched
-	min_20 = klist[0]	# initialize min count in top 20 keyword 
-	for word in klist:
-		# include keyword if top 20 list is not full (20 elements)
-		if len(top_20_list) < 20:
-			top_20_list.append(word)
-			# update min count in top 20 list
-			min_20 = min_20 if kdict[min_20] < kdict[word] else word
-		elif kdict[min_20] < kdict[word]:
-			# replace min_20 if word has more count
-			top_20_list.remove(min_20)
-			top_20_list.append(word)
-			# update new min
-			min_20 = top_20_list[0]
-			for word in top_20_list:
-				min_20 = min_20 if kdict[min_20] < kdict[word] else word
+    return [this_search,user_kw,top_20_list]
 
 
 # insertion_sort the top 20 keyword by count
-def insertion_sort(ss_user):
+def sort_rankings(user_kw):
 	# user specific
-	kdict = user_kw_his[ss_user].kw_dict
-	# insertion_sort
-	for i in range (1,len(top_20_list)):
-		cur_word = top_20_list[i]
-		pos = i
-		while pos > 0 and kdict[top_20_list[pos - 1]] > kdict[top_20_list[i]]:
-			top_20_list[pos] = top_20_list[pos - 1]
-			pos = pos - 1
-		top_20_list[pos] = cur_word 
+	kdict = user_kw.kw_dict
 
+	result = sorted(kdict, key=kdict.__getitem__)
+	result.reverse()
+	return result[:20]
 
 
 

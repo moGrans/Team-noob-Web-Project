@@ -12,6 +12,7 @@ import os
 # import helper function in recording keyword history
 import keyword_history
 import kw_history
+import kw_his
 
 # Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
@@ -21,7 +22,7 @@ REDIRECT_URI = 'http://localhost:8080/redirect'
 
 # configure beaker session
 session_opts = {
-    'session.type': 'cookie',
+    'session.type': 'file',
     'session.cookie_expires': False,
     'session.data_dir': './data',
     'session.auto': True
@@ -34,25 +35,33 @@ def index():
     # make a lazy session instance available every request request.environ.get
     ss = request.environ.get('beaker.session')
     ss_user = ss.get('user', None)
-    print(ss.get('user', None))
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
-
     if keywords is None or keywords is "":
         # Home Page 
         return template("homepage.tpl", ss_user = ss_user, ss = ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
+        # Get user's keyword history on beaker
+        user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
         # Handle search keyword input
-        this_search = kw_history.handle_input(keywords,ss_user)
+        results = kw_his.handle_input(keywords,ss_user,user_cookie)
+        this_search,user_kw,top_20_list = results[0], results[1], results[2]
+        # Store new user-based keyword dictionary
+        ss[ss_user] = user_kw
+        print user_kw.kw_dict
+        ss.save()
+        print (ss)
+        print "top_20_list is: {}".format(top_20_list)
         # Return result page
         return template("homepage_search_result.tpl", keywords = keywords, 
                                                     this_search = this_search,
                                                     ss = ss,
                                                     ss_user = ss_user,
-                                                    top_20_list = kw_history.top_20_list,                                           
-                                                    user_kw_his = kw_history.user_kw_his)
+                                                    top_20_list = top_20_list,                                           
+                                                    user_kw = user_kw)
+
 
 # google login
 @route('/login')
@@ -95,16 +104,9 @@ def redirect_page():
     users_service = build('oauth2', 'v2', http = http)
     user_document = users_service.userinfo().get().execute()
     user_email = user_document['email']
-    # test if session already set up of this user_email
-
     # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
-    print ss.get_by_id(user_email)
-    # determine if session cookie for userid exist
-
-
-
-
+    # determine if session cookie for uSserid exist
     print "ss is:"
     print (ss)
     ss['user'] = user_email
@@ -118,9 +120,9 @@ def redirect_page():
 def log_out():
     ss = request.environ.get('beaker.session')
     # remove user sign in session from beaker
-    ss.pop('user', None)
-    ss.pop('picture',None)
-    ss.save()
+    # ss.pop('user', None)
+    # ss.pop('picture',None)
+    # ss.save()
     # redirect back to homepage
     redirect('/')
 

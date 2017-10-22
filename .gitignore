@@ -5,3 +5,5 @@
 *.xml
 *.iml
 .idea/workspace.xml
+*.cache
+*.lock
