@@ -60,6 +60,14 @@
 			border-radius: 50%;
 			overflow: hidden;
 		}
+
+		#panel {
+			width: 100%;
+    		padding: 50px 0;
+    		text-align: center;
+    		background-color: lightblue;
+    		margin-top: 20px;
+		}
 	</style>
 
 
@@ -79,10 +87,11 @@
 			</a>
 			%end
 			<!-- user log in to google account -->
-			%if ss_user is not None:
-			<a href = '/logout' title = "Log out">	
-				<img src = {{ss['picture']}} width = 50 class = "profilepic">
-			</a>
+			%if ss_user is not None:	
+				<img src = {{ss['picture']}} width = 45 class = "profilepic">
+				<a href='/logout' title = "sign out">
+					<img src = "/static/image/sign_out.png" width = 80>
+				</a>
 			%end
 		</div>
 
@@ -97,14 +106,6 @@
 		    	<input type='submit' value='Search'>
 		    </form>
 		</div>
-
-		<!-- wave design -->
-		<div class = "bottomart" align = center>
-			<img src = "/static/image/wave_1.png" width = 100%>
-		</div>
-
-
-
 
   	</body>
 </html>
