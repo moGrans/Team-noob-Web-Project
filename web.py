@@ -24,7 +24,7 @@ token = None
 
 # configure beaker session
 session_opts = {
-    'session.type': 'cookie',
+    'session.type': 'file',
     'session.cookie_expires': False,
     'session.data_dir': './data',
     'session.auto': True
@@ -49,9 +49,12 @@ def index():
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
+        # acquire keyword history
+        user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
         # Handle search keyword input
         results = kw_his.handle_input(keywords,ss_user,user_cookie)
         this_search,user_kw,top_20_list = results[0], results[1], results[2]
+        print user_kw.kw_dict
         # Store new user-based keyword dictionary
         ss[ss_user] = user_kw
         ss.save()
@@ -61,7 +64,7 @@ def index():
                         ss=ss,
                         ss_user=ss_user,
                         top_20_list=top_20_list,
-                        user_kw=kw_his)
+                        user_kw=user_kw)
 
 
 # google login
