@@ -108,7 +108,7 @@
 		</div>
 
 		<!-- 10 recent search keyword for google user-->
-		%if ss_user is not None:
+		%if ss_user in ss:
 			<table align = center>
 			% for word in ss[ss_user].recent:
 				<tr><td>{{word}}</td></tr>

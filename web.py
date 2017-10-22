@@ -40,6 +40,7 @@ def index():
     ss = request.environ.get('beaker.session')
     ss_user = ss.get('user', None)
     print(ss.get('user', None))
+    print(ss)
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
 

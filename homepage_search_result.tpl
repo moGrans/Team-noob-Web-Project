@@ -181,7 +181,7 @@
     %end
 
     <!-- 10 recent search keyword for google user-->
-    %if ss_user is not None:
+    %if ss_user in ss:
       <div id = "search_result_head">
         <p> Recent 10 Keywords </p>
       </div> 
