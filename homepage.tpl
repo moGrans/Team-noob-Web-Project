@@ -50,7 +50,7 @@
 			margin-top: 15%;
 			/*position: fixed;*/
 		}
-
+		
 		.bottomart {
 			bottom: 0;
 			position: absolute;
@@ -109,6 +109,7 @@
 
 		<!-- 10 recent search keyword for google user-->
 		%if ss_user in ss:
+			<h2 align="center">Recent 10 Keywords</h2>
 			<table align = center>
 			% for word in ss[ss_user].recent:
 				<tr><td>{{word}}</td></tr>
