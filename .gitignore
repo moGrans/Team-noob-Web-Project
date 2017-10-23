@@ -9,3 +9,7 @@ data/*
 .idea/workspace.xml
 *.cache
 *.lock
+*.ppk
+*.ppk
+*.pem
+*.pem

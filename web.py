@@ -39,8 +39,7 @@ def index():
     # make a lazy session instance available every request request.environ.get
     ss = request.environ.get('beaker.session')
     ss_user = ss.get('user', None)
-    print(ss.get('user', None))
-    print(ss)
+
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
 
@@ -52,13 +51,15 @@ def index():
         keywords = request.query.get('keywords')
         # acquire keyword history
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
+
         # Handle search keyword input
         results = kw_his.handle_input(keywords,ss_user,user_cookie)
         this_search,user_kw,top_20_list = results[0], results[1], results[2]
-        print user_kw.kw_dict
+
         # Store new user-based keyword dictionary
         ss[ss_user] = user_kw
         ss.save()
+
         # Return result page
         return template("homepage_search_result.tpl", keywords=keywords,
                         this_search=this_search,
@@ -71,9 +72,8 @@ def index():
 # google login
 @route('/login')
 def google_login():
+    
     ss = request.environ.get('beaker.session')
-
-    print(ss.get('user', None))
 
     if ss.get('user', None) is None:
         # create flow from json and stores client id, client secret and other parameter
@@ -113,12 +113,10 @@ def redirect_page():
     # Set token as global for further use
     token = credentials.get_access_token(http).access_token
 
-    print "The access token: ", token
-
     # Get user email
     users_service = build('oauth2', 'v2', http=http)
     user_document = users_service.userinfo().get().execute()
-    print (user_document)
+
     user_email = user_document['email']
     # store log in information in a beaker session
     ss = request.environ.get('beaker.session')
@@ -142,7 +140,8 @@ def log_out():
                                  params={'token': token},
                                  headers={'content-type': 'application/x-www-form-urlencoded'})
     except:
-        print "Went wrong when getting response from REVOKE url"
+        raise HttpError
+
     # redirect back to homepage
     redirect('/')
 
