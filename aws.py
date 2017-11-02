@@ -4,7 +4,7 @@ import time
 
 SELECTED_AMI_IMAGE = 'ami-8caa1ce4'
 SELECTED_INSTANCE_TYPE = 't1.micro'
-KEY_NAME = 'NewInstance'
+KEY_NAME = 'Website'
 
 
 def initializeConnection():
@@ -37,16 +37,18 @@ def processAWS():
 
     # Creating a key pair on the connection
     try:
+        print "Creating Key Pair: " + KEY_NAME
         newKeyPair = connection.create_key_pair(KEY_NAME)
 
     except Exception as error:
         print "Possibly due to the KeyPair exists already\n" \
-              "Using the Exists KeyPair.. "
+              "deleting the Exists KeyPair.. "
+        connection.delete_key_pair(key_name=KEY_NAME)
+        newKeyPair = connection.create_key_pair(KEY_NAME)
 
-    else:
-        if os.path.exists(os.getcwd()+'/KeyPairs/'+KEY_NAME+'.pem'):
-            os.remove(os.getcwd()+'/KeyPairs/'+KEY_NAME+'.pem')
-        newKeyPair.save(os.getcwd()+'/KeyPairs')
+    if os.path.exists(os.getcwd()+'/KeyPairs/'+KEY_NAME+'.pem'):
+        os.remove(os.getcwd()+'/KeyPairs/'+KEY_NAME+'.pem')
+    newKeyPair.save(os.getcwd()+'/KeyPairs')
 
     try:
         # Creating a security group
@@ -101,13 +103,13 @@ def processAWS():
     # Binding static IP
     staticIP = None
 
-    if not connection.get_all_addresses():
-        staticIP = connection.get_all_addresses()[0]
-    else:
-        staticIP = connection.allocate_address()
+    # if not connection.get_all_addresses():
+    #     staticIP = connection.get_all_addresses()[0]
+    # else:
+    staticIP = connection.allocate_address()
 
     for eachInst, order in zip(instList, range(len(instList))):
-        print "Instance %d at IP: %s" % (order+1, eachInst.ip_address)
+        print "Instance %d at IP: %s" % (order, eachInst.ip_address)
 
         # Binding a static IP address to instances
         staticIP.associate(instance_id=eachInst.id,allow_reassociation=True)
