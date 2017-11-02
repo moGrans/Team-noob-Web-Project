@@ -1,5 +1,5 @@
 import bottle
-from bottle import route, Bottle, template, request, run, get, post, static_file, app, redirect
+from bottle import route, Bottle, template, request, run, get, post, static_file, app, redirect, error
 from beaker.middleware import SessionMiddleware
 from oauth2client import client
 from oauth2client.client import OAuth2WebServerFlow
@@ -149,6 +149,17 @@ def log_out():
 @route('/static/<filepath:path>')
 def server_static(filepath):
     return static_file(filepath, root=os.getcwd())
+
+# # test error return page
+# @route('/404')
+# def error404():
+#     return template("error_page.tpl")
+
+
+# error page
+@error(404)
+def error404(error):
+    return tempalte("error_page.tpl")
 
 
 # run the created web page
