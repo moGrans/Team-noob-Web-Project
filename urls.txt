@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 http://www.eecg.toronto.edu
+=======
+http://api.mongodb.com/python/current/tutorial.html
+>>>>>>> 6b66bd15f9d32390fedb11ef1bba74aec6a5e491

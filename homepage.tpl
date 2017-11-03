@@ -2,7 +2,7 @@
     <style>
     	/*style of search box*/
         input[type=text] {
-        width: 40%;
+        width: 650px;
         padding: 15px 20px;
     	margin: 8px 0;
     	display: inline-block;
@@ -29,7 +29,7 @@
 
 		/*style of submit button*/
 		input[type=submit] {
-			width: 8%;
+			width: 100px;
 		    background-color: #4CAF50;
 		    color: white;
 		    padding: 15px 15px;
@@ -47,7 +47,10 @@
 		}
 
 		.searchbar {
-			margin-top: 15%;
+			position: absolute;
+			top:300px;
+			left:350px;
+			/*margin-top: 15%;*/
 			/*position: fixed;*/
 		}
 		
@@ -61,12 +64,38 @@
 			overflow: hidden;
 		}
 
+		.recentKW {
+			position: absolute;
+			top:482px;
+			left:350px;
+			width:650px;
+			background-color: #e5ede2;
+			font-size: large;
+		}
+
+		tr:nth-child(even){background-color: #d3dbd1}
+
+		th, td {
+        text-align: center;
+        padding: 5px;
+    	}
+
+		table {
+			width: 650px;
+		}
+
 		#panel {
 			width: 100%;
     		padding: 50px 0;
     		text-align: center;
     		background-color: lightblue;
     		margin-top: 20px;
+		}
+
+		#logo {
+			position: relative;
+			left: 50px;
+			width: 600;
 		}
 	</style>
 
@@ -96,9 +125,9 @@
 		</div>
 
   		<!-- search bar and logo -->
-  		<div class = "searchbar" align = center>
+  		<div class = "searchbar">
 	  		<!-- logo image -->
-	  		<img src = "/static/image/test_logo.png" width = 600>
+	  		<img id = "logo" src = "/static/image/test_logo.png">
 	  		<br>
 	  		<!-- input filed for search -->
 		    <form method="get" action="/">
@@ -108,13 +137,15 @@
 		</div>
 
 		<!-- 10 recent search keyword for google user-->
-		%if ss_user in ss:
-			<h2 align="center">Recent 10 Keywords</h2>
+		<div class = "recentKW">
+		%if ss_user is not None:
+			<h3 align="center">Recent 10 Keywords</h2>
 			<table align = center>
 			% for word in ss[ss_user].recent:
 				<tr><td>{{word}}</td></tr>
 			%end
 			</table>
 		%end
+		</div>
   	</body>
 </html>
