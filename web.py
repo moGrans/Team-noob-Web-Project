@@ -17,7 +17,8 @@ import kw_his
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
-REDIRECT_URI = 'http://localhost:8080/redirect'
+# Redirect url to be changed if instance is to be relauched
+REDIRECT_URI = 'http://ec2-54-156-232-184.compute-1.amazonaws.com/redirect'
 REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke'
 
 token = None
@@ -78,9 +79,9 @@ def google_login():
     if ss.get('user', None) is None:
         # create flow from json and stores client id, client secret and other parameter
         flow = flow_from_clientsecrets(
-            'client_secrets.json',
-            scope='https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email',
-            redirect_uri='http://localhost:8080/redirect')
+                'client_secrets.json',
+                scope='https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email',
+                redirect_uri= REDIRECT_URI)
         # generate authorization server URI
         uri = flow.step1_get_authorize_url()
         # redirect to google sign in prompt

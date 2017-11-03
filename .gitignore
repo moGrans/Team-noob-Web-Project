@@ -13,3 +13,5 @@ data/*
 *.ppk
 *.pem
 *.pem
+*.pyproj
+*.suo
