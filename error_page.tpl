@@ -38,6 +38,9 @@
 		<div class="message">
 			<p> OH NO... That's an error... </p>
 			<p> The requested content does not exist on our website :( </p>
+			<a href = "/" title = "Go to homepage">
+			<p> Click me to go back to Homepage </p>
+			</a>
 		</div>
 		</div>
 	</body>
