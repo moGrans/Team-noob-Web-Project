@@ -42,13 +42,17 @@ def index():
 
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
+    page = request.query.get('page')
 
-    if keywords is None or keywords is "":
+    if page is None and (keywords is None or keywords is ""):
+        ss.pop('query_string',None)
+        ss.pop('keywords',None)
         # Home Page
         return template("homepage.tpl", ss_user=ss_user, ss=ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
+
         # acquire keyword history
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
 
@@ -60,13 +64,29 @@ def index():
         ss[ss_user] = user_kw
         ss.save()
 
+        # add for lab 3
+        # SAMPLE!
+        url = [url for url in range(100)]
+
+        if page is None or page is "":
+            page = 1
+            query_string = "?keywords=" + keywords.replace(" ","+")
+            ss['query_string'] = query_string
+        
+        page = int(page)
+          
         # Return result page
-        return template("homepage_search_result.tpl", keywords=keywords,
+        return template("query_result.tpl", keywords=keywords,
                         this_search=this_search,
                         ss=ss,
                         ss_user=ss_user,
                         top_20_list=top_20_list,
-                        user_kw=user_kw)
+                        user_kw=user_kw,
+                        url = url,
+                        page = page,
+                        total_page = (len(url) + 4)//5)
+
+
 
 
 # google login
