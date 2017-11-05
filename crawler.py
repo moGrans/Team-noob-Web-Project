@@ -23,7 +23,7 @@ import urlparse
 from BeautifulSoup import *
 from collections import defaultdict
 import re
-
+from Database import database
 
 def attr(elem, attr):
     """An html attribute from an html element. E.g. <a href="">, then
@@ -55,6 +55,8 @@ class crawler(object):
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
         self._exit = defaultdict(lambda *a, **ka: self._visit_ignore)
 
+        # to avoid repeated url crawling
+        self._database = db_conn
 
         ##### Start of newly added variables
         # inverted index
@@ -72,6 +74,10 @@ class crawler(object):
         # document index
         # doc_id -> corresponding url
         self._doc_index = defaultdict(int)
+
+        # document lexicon
+        # doc_id -> document title
+        self._doc_title = dict()
         ##### End of newly added variables
 
         # add a link to our graph, and indexing info to the related page
@@ -125,6 +131,9 @@ class crawler(object):
         # TODO remove me in real version
         self._mock_next_doc_id = 1
         self._mock_next_word_id = 1
+        # Record doc and word id into urls.txt, for continuously use
+        self.ids = None
+        self.urls = None
 
         # keep track of some info about the page we are currently parsing
         self._curr_depth = 0
@@ -136,8 +145,20 @@ class crawler(object):
         # get all urls into the queue
         try:
             with open(url_file, 'r') as f:
-                for line in f:
-                    self._url_queue.append((self._fix_url(line.strip(), ""), 0))
+                self.urls = f.readlines()
+
+                # Read doc and word id from the urls.txt
+                idLine = self.urls[0]
+                ids = { ((idLine.split('|'))[0].split(':'))[0].strip() : int(((idLine.split('|'))[0].split(':'))[1]),
+                        ((idLine.split('|'))[1].split(':'))[0].strip() : int(((idLine.split('|'))[1].split(':'))[1]) }
+                self._mock_next_doc_id = ids['doc_id']
+                self._mock_next_word_id = ids['word_id']
+                
+                
+                # Append each url into url queue
+                for line in self.urls[1:]:
+                    if db_conn.checkURL(line):
+                        self._url_queue.append((self._fix_url(line.strip(), ""), 0))
         except IOError:
             pass
 
@@ -176,7 +197,7 @@ class crawler(object):
         """Get the document id for some url."""
         if url in self._doc_id_cache:
             return self._doc_id_cache[url]
-
+        
         # TODO: just like word id cache, but for documents. if the document
         #       doesn't exist in the db then only insert the url and leave
         #       the rest to their defaults.
@@ -209,6 +230,8 @@ class crawler(object):
         title_text = self._text_of(elem).strip()
         print "document title=" + repr(title_text)
 
+        self._doc_title[self._curr_doc_id] = title_text
+
         # TODO update document title for document id self._curr_doc_id
 
     def _visit_a(self, elem):
@@ -221,14 +244,16 @@ class crawler(object):
         #      "alt="+repr(attr(elem,"alt")), \
         #      "text="+repr(self._text_of(elem))
 
-        # add the just found URL to the url queue
-        self._url_queue.append((dest_url, self._curr_depth))
+        # Check cloud whether the url has been visited
+        if self._database.checkURL(dest_url):
+            # add the just found URL to the url queue
+            self._url_queue.append((dest_url, self._curr_depth))
 
-        # add a link entry into the database from the current document to the
-        # other document
-        self.add_link(self._curr_doc_id, self.document_id(dest_url))
+            # add a link entry into the database from the current document to the
+            # other document
+            self.add_link(self._curr_doc_id, self.document_id(dest_url))
 
-        # TODO add title/alt/text to index for destination url
+            # TODO add title/alt/text to index for destination url
 
     def _add_words_to_document(self):
         # TODO: knowing self._curr_doc_id and the list of all words and their
@@ -361,7 +386,13 @@ class crawler(object):
                     socket.close()
 
         try:
+            # Resolve inverted index
             self._resolve_inverted_index()
+            # Rewrite doc and word id in urls.txt
+            self.urls[0] = "doc_id:{0} | word_id:{1}\n".format(self._mock_next_doc_id,
+                                                             self._mock_next_word_id)
+            with open('urls.txt', 'w') as targetFile:
+                targetFile.writelines(self.urls)
         except Exception as error:
             print error
 
