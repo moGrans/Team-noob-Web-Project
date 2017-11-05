@@ -40,7 +40,6 @@ WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 class crawler(object):
     """Represents 'Googlebot'. Populates a database by crawling and indexing
     a subset of the Internet.
-
     This crawler keeps track of font sizes and makes it simpler to manage word
     ids and document ids."""
 
@@ -153,8 +152,8 @@ class crawler(object):
                         ((idLine.split('|'))[1].split(':'))[0].strip() : int(((idLine.split('|'))[1].split(':'))[1]) }
                 self._mock_next_doc_id = ids['doc_id']
                 self._mock_next_word_id = ids['word_id']
-                
-                
+
+
                 # Append each url into url queue
                 for line in self.urls[1:]:
                     if db_conn.checkURL(line):
@@ -197,7 +196,7 @@ class crawler(object):
         """Get the document id for some url."""
         if url in self._doc_id_cache:
             return self._doc_id_cache[url]
-        
+
         # TODO: just like word id cache, but for documents. if the document
         #       doesn't exist in the db then only insert the url and leave
         #       the rest to their defaults.
@@ -223,7 +222,10 @@ class crawler(object):
     def add_link(self, from_doc_id, to_doc_id):
         """Add a link into the database, or increase the number of links between
         two pages in the database."""
-        # TODO
+        if (from_doc_id, to_doc_id) not in self._link_cache:
+            self._link_cache[(from_doc_id, to_doc_id)] = 1
+        else:
+            self._link_cache[(from_doc_id, to_doc_id)] += 1
 
     def _visit_title(self, elem):
         """Called when visiting the <title> tag."""
@@ -415,6 +417,11 @@ class crawler(object):
 
     def get_resolved_inverted_index(self):
         return self._resolved_inverted_index
+
+    def rank_page(self, links):
+        page_ranks = pagerank.page_rank(self._link_cache.keys())
+
+        #TODO: store page_ranks in db
 
 
 if __name__ == "__main__":
