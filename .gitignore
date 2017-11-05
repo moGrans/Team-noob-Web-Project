@@ -13,3 +13,6 @@ data/*
 *.ppk
 *.pem
 *.pem
+*.pyproj
+*.suo
+settings.json
