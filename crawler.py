@@ -51,6 +51,7 @@ class crawler(object):
         self._doc_id_cache = {}
         self._word_id_cache = {}
         self._page_ranks = {}
+        self._link_cache = {}
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -420,7 +421,7 @@ class crawler(object):
     def get_resolved_inverted_index(self):
         return self._resolved_inverted_index
 
-    def rank_page(self, links):
+    def rank_page(self):
         self._page_ranks = pagerank.page_rank(self._link_cache.keys())
 
         #TODO: store page_ranks in db

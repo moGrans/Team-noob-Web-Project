@@ -19,10 +19,13 @@ CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleuserconten
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
 # Redirect url to be changed if instance is to be relauched
-REDIRECT_URI = 'http://ec2-54-156-232-184.compute-1.amazonaws.com/redirect'
+REDIRECT_URI = 'localhost:8080/redirect'
 REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke'
 
 token = None
+
+# Set the database to be global variable for ease of use
+db = None
 
 # configure beaker session
 session_opts = {
@@ -69,13 +72,10 @@ def index():
         ss[ss_user] = user_kw
         ss.save()
 
-        urls = db.findRelatedDocUrls(splwords[0])
-        doc_result = []
-        if urls is not None:
-            for url in urls:
-                doc_result.append(db.findDoc(url))
-
-        doc_result.sort(key = takeForth)
+        # Returns a list of tuple sorted by page ranks
+        # tuple = ( url, title )
+        urls = db.findRelatedPageRank(splwords[0])
+     
         if page is None or page is "":
             page = 1
             query_string = "?keywords=" + keywords.replace(" ","+")
@@ -90,7 +90,7 @@ def index():
                         ss_user=ss_user,
                         top_20_list=top_20_list,
                         user_kw=user_kw,
-                        url = doc_result,
+                        url = urls,
                         page = page,
                         total_page = (len(urls) + 4)//5)
 
@@ -192,5 +192,7 @@ def error404(error):
 
 # run the created web page
 if __name__ == '__main__':
+    print 'Initializing database'
     db = database()
-    run(app=wsgi_app, port=8080, reloader=True)
+    print 'Booting up web service'
+    run(app=wsgi_app, host='localhost',port=8080, reloader=True)

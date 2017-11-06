@@ -1,4 +1,2 @@
-doc_id:4658 | word_id:12607
+doc_id:423 | word_id:1446
 http://www.eecg.toronto.edu/
-https://www.w3schools.com/
-http://www.eecg.toronto.edu/~enright/teaching/ece243S/notes/

@@ -1,5 +1,5 @@
 import datetime
-
+import operator
 import pymongo
 
 CONNECTION_STR = \
@@ -106,22 +106,22 @@ class database():
 
         result = self.reInvertedIndexDB.insert_many(newPost)
 
-    def insertIntoPageRank(self, word, sortedPages):
-        """
-        either insert or update ranked pages corresponding to
-        a word on data base
+    # def insertIntoPageRank(self, word, sortedPages):
+    #     """
+    #     either insert or update ranked pages corresponding to
+    #     a word on data base
 
-        :word: str
-        :sortedPages: list(int)
-        """
-        newPost = []
-        if self.pageRankDB.find({'word':word}):
-            self.pageRankDB.find_one_and_replace({'word':word},
-                                                {'word':word,
-                                                'sortedPages':sortedPages})
-        else:
-            self.pageRankDB.insert_one({'word':word,
-                                        'sortedPages':sortedPages})
+    #     :word: str
+    #     :sortedPages: list(int)
+    #     """
+    #     newPost = []
+    #     if self.pageRankDB.find({'word':word}):
+    #         self.pageRankDB.find_one_and_replace({'word':word},
+    #                                             {'word':word,
+    #                                             'sortedPages':sortedPages})
+    #     else:
+    #         self.pageRankDB.insert_one({'word':word,
+    #                                     'sortedPages':sortedPages})
 
     def checkURL(self, url):
         """
@@ -235,8 +235,22 @@ class database():
         :return: list(str)
                  None       # if not found
         """
-        result = self.pageRankDB.find_one({'word':word})
-        if not result:
+        wordRelated = self.lexiconDB.find_one({'word': word})
+        
+        if not wordRelated:
             return None
-        else:
-            return result['sortedPages']
+
+        word_ID = wordRelated['word_id']
+
+        relatedDocIDs = self.findRelatedDocIDs(word_ID)
+
+        result = {}
+        for eachID in relatedDocIDs:
+            found = self.docIndexDB.find_one({'doc_id':eachID})
+            result[ (found['url'], found['title']) ] = found['doc_score']
+
+        sortedURL = sorted(result.items(), key=operator.itemgetter(1))
+        sortedURL = [ele[0] for ele in sortedURL]
+        sortedURL.reverse()
+
+        return sortedURL
