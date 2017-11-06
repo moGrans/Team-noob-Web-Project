@@ -173,10 +173,10 @@
 
     <!-- RESULT URL -->
     <div class = "result">
-      %for (url, title) in url[5*(page-1):5*page]:
-      <a hrf= {{url}}>
-        <p> {{title}} </p>
-      </a>
+          %for (url, title) in url[5*(page-1):5*page]:
+          <a href= {{url}}>
+            <p> {{title}} </p>
+          </a>
       <div style="white-space:nowrap">
         <cite  class="ref">{{url}}</cite>
       </div>

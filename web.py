@@ -75,7 +75,10 @@ def index():
         # Returns a list of tuple sorted by page ranks
         # tuple = ( url, title )
         urls = db.findRelatedPageRank(splwords[0])
-     
+
+        if not urls:
+            redirect("error_page.tpl")
+
         if page is None or page is "":
             page = 1
             query_string = "?keywords=" + keywords.replace(" ","+")
@@ -187,7 +190,7 @@ def server_static(filepath):
 # error page
 @error(404)
 def error404(error):
-    return tempalte("error_page.tpl")
+    return template("error_page.tpl")
 
 
 # run the created web page

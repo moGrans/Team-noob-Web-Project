@@ -24,8 +24,12 @@ if __name__ == "__main__":
     print "Inserting into resolved inverted index..."
     db.insertIntoReInvertedIndex(bot._resolved_inverted_index)
 
-    print "Crawling fininshed printing out page ranks"
-    
+    print "Crawling fininshed"
+
+    print "Note that required website data from http://www.eecg.toronto.edu/ has been added to database already,\
+           here is a example website for crawling"
+
+    print "/nPrinting out page ranks"
     # Sorting cache of page rank
     sortedPages = sorted(bot._page_ranks.items(), key=operator.itemgetter(1))
     sortedPages.reverse()

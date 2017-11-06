@@ -254,11 +254,11 @@ class crawler(object):
             # add the just found URL to the url queue
             self._url_queue.append((dest_url, self._curr_depth))
 
-            # add a link entry into the database from the current document to the
-            # other document
-            self.add_link(self._curr_doc_id, self.document_id(dest_url))
+        # add a link entry into the database from the current document to the
+        # other document
+        self.add_link(self._curr_doc_id, self.document_id(dest_url))
 
-            # TODO add title/alt/text to index for destination url
+        # TODO add title/alt/text to index for destination url
 
     def _add_words_to_document(self):
         # TODO: knowing self._curr_doc_id and the list of all words and their

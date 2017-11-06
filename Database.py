@@ -1,6 +1,7 @@
 import datetime
 import operator
 import pymongo
+import pprint
 
 CONNECTION_STR = \
     "mongodb://Gransy:dfvGhUj068c9YqiA\
@@ -236,7 +237,8 @@ class database():
                  None       # if not found
         """
         wordRelated = self.lexiconDB.find_one({'word': word})
-        
+
+
         if not wordRelated:
             return None
 
@@ -244,10 +246,13 @@ class database():
 
         relatedDocIDs = self.findRelatedDocIDs(word_ID)
 
+        if not relatedDocIDs:
+            return None
+
         result = {}
         for eachID in relatedDocIDs:
             found = self.docIndexDB.find_one({'doc_id':eachID})
-            result[ (found['url'], found['title']) ] = found['doc_score']
+            result[ (found['url'], found['doc_title']) ] = found['doc_score']
 
         sortedURL = sorted(result.items(), key=operator.itemgetter(1))
         sortedURL = [ele[0] for ele in sortedURL]
