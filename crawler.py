@@ -24,6 +24,7 @@ from BeautifulSoup import *
 from collections import defaultdict
 import re
 from Database import database
+import pagerank
 
 def attr(elem, attr):
     """An html attribute from an html element. E.g. <a href="">, then
@@ -49,6 +50,7 @@ class crawler(object):
         self._url_queue = []
         self._doc_id_cache = {}
         self._word_id_cache = {}
+        self._page_ranks = {}
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -419,7 +421,7 @@ class crawler(object):
         return self._resolved_inverted_index
 
     def rank_page(self, links):
-        page_ranks = pagerank.page_rank(self._link_cache.keys())
+        self._page_ranks = pagerank.page_rank(self._link_cache.keys())
 
         #TODO: store page_ranks in db
 

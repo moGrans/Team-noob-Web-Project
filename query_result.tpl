@@ -153,19 +153,19 @@
         <img src = "/static/image/sign_in.png" width = 80>
       </a>
       %end
-      %if ss_user is not None:         
+      %if ss_user is not None:
         <a href='/logout' title = "sign out">
           <img src = "/static/image/sign_out.png" width = 80 style = "float:right">
         </a>
         <img src = {{ss['picture']}} width = 45 style = "float:right;border-radius: 50%;overflow: hidden;">
       %end
     </h1>
-    
+
     <!-- RESULT URL -->
     <div class = "result">
-      %for u in url[5*(page-1):5*page]:
-      <a hrf= {{u}}>
-        <p> {{u}} </p>
+      %for (url, doc_id, title, score) in url[5*(page-1):5*page]:
+      <a hrf= {{url}}>
+        <p> {{title}} </p>
       </a>
       <br>
       %end
@@ -184,7 +184,7 @@
         <a href="/{{ss['query_string']}}&page={{total_page}}">&raquo;</a>
       % end
     </div>
-    
+
 
   </body>
 </html>

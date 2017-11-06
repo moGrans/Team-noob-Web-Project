@@ -6,6 +6,7 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import flow_from_clientsecrets
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
+from Database import database
 import httplib2
 import requests
 import os
@@ -34,6 +35,9 @@ session_opts = {
 wsgi_app = SessionMiddleware(app(), session_opts)
 
 
+def takeForth(elem):
+    return elem[3]
+
 # homepage of the site which will request user input search content
 @get('/')
 def index():
@@ -53,7 +57,7 @@ def index():
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
-
+        splwords = keywords.split(' ')
         # acquire keyword history
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
 
@@ -65,17 +69,20 @@ def index():
         ss[ss_user] = user_kw
         ss.save()
 
-        # add for lab 3
-        # SAMPLE!
-        url = [url for url in range(100)]
+        urls = db.findRelatedDocUrls(splwords[0])
+        doc_result = []
+        if urls is not None:
+            for url in urls:
+                doc_result.append(db.findDoc(url))
 
+        doc_result.sort(key = takeForth)
         if page is None or page is "":
             page = 1
             query_string = "?keywords=" + keywords.replace(" ","+")
             ss['query_string'] = query_string
-        
+
         page = int(page)
-          
+
         # Return result page
         return template("query_result.tpl", keywords=keywords,
                         this_search=this_search,
@@ -83,9 +90,9 @@ def index():
                         ss_user=ss_user,
                         top_20_list=top_20_list,
                         user_kw=user_kw,
-                        url = url,
+                        url = doc_result,
                         page = page,
-                        total_page = (len(url) + 4)//5)
+                        total_page = (len(urls) + 4)//5)
 
 
 
@@ -93,7 +100,7 @@ def index():
 # google login
 @route('/login')
 def google_login():
-    
+
     ss = request.environ.get('beaker.session')
 
     if ss.get('user', None) is None:
@@ -185,4 +192,5 @@ def error404(error):
 
 # run the created web page
 if __name__ == '__main__':
+    db = database()
     run(app=wsgi_app, port=8080, reloader=True)

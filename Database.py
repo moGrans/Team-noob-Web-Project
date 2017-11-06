@@ -18,7 +18,7 @@ class database():
             self.client  = pymongo.MongoClient(CONNECTION_STR)
         except Exception as error:
             assert False, error
-        
+
         self.lexiconDB = self.client.lexicon.Posts
         self.docIndexDB = self.client.document_index.Posts
         self.invertedIndexDB = self.client.inverted_index.Posts
@@ -29,7 +29,7 @@ class database():
         self.pageRankDB = self.client.page_rank.Posts
 
     def insertIntoLexicon(self, _lexicon):
-        """ Insert current crawled lexicon into mongoDB. """        
+        """ Insert current crawled lexicon into mongoDB. """
         newPost = []
 
         if len(_lexicon) == 0:
@@ -39,11 +39,11 @@ class database():
             newPost.append({'date':datetime.datetime.utcnow(),
                             "word":word,
                             "word_id":word_id})
-    
+
         lexiconDB = self.client.lexicon.Posts
         result = lexiconDB.insert_many(newPost)
-        
-    def insertIntoDocIndex(self, _doc_index, _doc_title):
+
+    def insertIntoDocIndex(self, _doc_index, _doc_title, page_ranks):
         """ Insert current crawled doc index into mongodDB. """
         newPost = []
 
@@ -51,19 +51,20 @@ class database():
             return 0
 
         # A lambda fuction for use of assigning doc title
-        hasKey = lambda key,col: col[key] if col.has_key(key) else ''  
+        hasKey = lambda key,col: col[key] if col.has_key(key) else ''
         for docID, url in dict(_doc_index).iteritems():
             if self.docIndexDB.find_one({'doc_id':docID}):
                 continue
             newPost.append({'date':datetime.datetime.utcnow(),
                             'doc_id':docID,
                             'url':url,
-                            'doc_title': hasKey(docID, _doc_title)})
+                            'doc_title': hasKey(docID, _doc_title),
+                            'doc_score': page_ranks[docID]})
         result = self.docIndexDB.insert_many(newPost)
 
     def insertIntoInvertedIndex(self, _inverted_index):
         """ Insert current crawled inverted index into monogoDB. """
-        
+
         newPost = []
         if len(_inverted_index) == 0:
             return 0
@@ -76,23 +77,23 @@ class database():
             else:
                 # Merging existing doc ids with newly crawled ids
                 temp = result['doc_ids'].extend(list(docIDs))
-                
+
                 # Update cloud database
                 self.invertedIndexDB.find_one_and_update({'word_id':wordID},
                                                          {'$set':{'doc_ids':temp}})
-        
+
         result = self.invertedIndexDB.insert_many(newPost)
 
     def insertIntoReInvertedIndex(self, _resolved_inverted_index):
         """ Insert resolved inverted index into monogoDB. """
-        
+
         newPost = []
         if len(_resolved_inverted_index) == 0:
             return 0
 
         for word, urls in _resolved_inverted_index.iteritems():
             result = self.reInvertedIndexDB.find_one({'word':word})
-            if not result:   
+            if not result:
                 newPost.append({"word":word,
                                 "urls":list(urls)})
             else:
@@ -102,14 +103,14 @@ class database():
                 # Update cloud database
                 self.reInvertedIndexDB.find_one_and_update({'word':word},
                                                            {'$set':{'urls':temp}})
-        
+
         result = self.reInvertedIndexDB.insert_many(newPost)
-            
+
     def insertIntoPageRank(self, word, sortedPages):
-        """ 
-        either insert or update ranked pages corresponding to 
-        a word on data base 
-        
+        """
+        either insert or update ranked pages corresponding to
+        a word on data base
+
         :word: str
         :sortedPages: list(int)
         """
@@ -120,7 +121,7 @@ class database():
                                                 'sortedPages':sortedPages})
         else:
             self.pageRankDB.insert_one({'word':word,
-                                        'sortedPages':sortedPages})                  
+                                        'sortedPages':sortedPages})
 
     def checkURL(self, url):
         """
@@ -163,15 +164,14 @@ class database():
                 return result['word_id']
         else:
             raise TypeError
-         
+
     def findDoc(self, arg):
         """
-        Depending on type of arg, function will return a doc id
-        or a url
+        Depending on type of arg, function will return a tuple
         If url id is given, the doc id is returned
         If doc id is given, the url is returned
-        -> findDoc(doc_id) => url 
-        -> findDoc(url)    => doc_id
+        -> findDoc(doc_id) => (url, doc_id, title, score)
+        -> findDoc(url)    => (url, doc_id, title, score)
         Note in both case if nothing is found, None is returned
 
         :arg: int or str
@@ -183,13 +183,14 @@ class database():
             if not result:
                 return None
             else:
-                return result['url']
+                return (result['url'], arg, result['doc_title'], result['doc_score'])
+
         elif type(arg) == str:
             result = self.docIndexDB.find_one({'url':arg})
             if not result:
                 return None
             else:
-                return result['doc_id']
+                return (arg, result['doc_id'], result['doc_title'], result['doc_score'])
         else:
             raise TypeError
 
@@ -208,8 +209,8 @@ class database():
             return None
         else:
             return result['doc_ids']
-        
-    
+
+
     def findRelatedDocUrls(self, word):
         """
         Find document urls corresponding to the word, a list of urls
@@ -225,7 +226,7 @@ class database():
             return None
         else:
             return result['urls']
-    
+
     def findRelatedPageRank(self, word):
         """
         Find the ranked list of urls related to a word
@@ -239,5 +240,3 @@ class database():
             return None
         else:
             return result['sortedPages']
-        
-

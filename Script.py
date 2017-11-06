@@ -5,7 +5,7 @@ if __name__ == "__main__":
     ''' Testing functionality of crawler '''
     print "Establish connection..."
     db = database()
-    
+
     bot = crawler(db, 'urls.txt')
     bot.crawl(depth=2)
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     db.insertIntoLexicon(bot._lexicon)
 
     print "Inserting into document index"
-    db.insertIntoDocIndex(bot._doc_index, bot._doc_title)
+    db.insertIntoDocIndex(bot._doc_index, bot._doc_title, bot._page_ranks)
 
     print "Inserting into inverted index..."
     db.insertIntoInvertedIndex(bot._inverted_index)
