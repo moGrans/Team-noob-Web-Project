@@ -112,14 +112,24 @@
       margin-right: 10px;
     }
 
+    a:link {
+      color: #1a0dab;
+    }
+
+    cite {
+      color: #006621;
+      font-style: normal;
+      font-size: 14px;
+    }
+
     .pagination a {
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color .3s;
-    position: relative;
-    top:150px;
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color .3s;
+      position: relative;
+      top:150px;
     }
 
     .pagination a.active {
@@ -163,11 +173,14 @@
 
     <!-- RESULT URL -->
     <div class = "result">
-      %for (url, doc_id, title, score) in url[5*(page-1):5*page]:
+      %for (url, title) in url[5*(page-1):5*page]:
       <a hrf= {{url}}>
         <p> {{title}} </p>
       </a>
-      <br>
+      <div style="white-space:nowrap">
+        <cite  class="ref">{{url}}</cite>
+      </div>
+
       %end
     </div>
 
