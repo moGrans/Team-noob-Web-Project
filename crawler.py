@@ -244,7 +244,7 @@ class crawler(object):
 
         dest_url = self._fix_url(self._curr_url, attr(elem, "href"))
 
-        # print "href="+repr(dest_url), \
+        #print "href="+repr(dest_url), \
         #      "title="+repr(attr(elem,"title")), \
         #      "alt="+repr(attr(elem,"alt")), \
         #      "text="+repr(self._text_of(elem))
@@ -398,7 +398,7 @@ class crawler(object):
                                                              self._mock_next_word_id)
             with open('urls.txt', 'w') as targetFile:
                 targetFile.writelines(self.urls)
-        except Exception as error:
+        except Exception as error: 
             print error
 
     def _resolve_inverted_index(self):

@@ -1,0 +1,5 @@
+1. To run backend, enter following command on terminal:
+	python run_backend_test.py
+2. To access frontend on AWS:
+	DNS: ec2-54-156-232-184.compute-1.amazonaws.com
+	IP: 54.156.232.184

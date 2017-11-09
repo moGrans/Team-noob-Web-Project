@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
     bot = crawler(db, 'urls.txt')
     bot.crawl(depth=1)
+    bot.rank_page()
 
     print "Inserting into lexicon..."
     db.insertIntoLexicon(bot._lexicon)
@@ -41,4 +42,4 @@ if __name__ == "__main__":
     print tplt.format("URL", "Score")
 
     for eachPair in sortedPages:
-        print tplt.format(eachPair[0], [1])
+        print tplt.format(eachPair[0], eachPair[1])
