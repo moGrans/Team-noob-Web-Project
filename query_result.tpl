@@ -51,16 +51,16 @@
     input[type=submit] {
       position: relative;
       top: 8px;
-      width: 8%;
-        background-color: #4CAF50;
-        color: white;
-        padding: 8px 8px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: bold;
+      width: 10%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 8px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
     }
 
     /*style of submit button when mouse is on top*/
@@ -108,12 +108,62 @@
     }
 
     #searchform {
-      float = left;
+      float: left;
       margin-right: 10px;
     }
+    
+    h3 {
+      display: block;
+      font-size: 1.17em;
+      -webkit-margin-before: 1em;
+      -webkit-margin-after: 1em;
+      -webkit-margin-start: 0px;
+      -webkit-margin-end: 0px;
+      font-weight: normal;
+    }
+    .mw {
+      max-width: 1197px;
+      margin-top: 40px;
+      padding: 0 90px;
+    }
 
-    a:link {
+    .rcnt {
+      border: 0;
+      margin: 0;
+    }
+
+    .g {
+      margin-top: 0;
+      margin-bottom: 26px;
+      font-size: small;
+      font-family: arial,sans-serif;
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .result {
+      font-size: medium;
+    }
+    
+    .r {
+      margin: 0;
+    }
+
+    .r a {
+      text-decoration: none;
+    }
+    
+    .r a:hover {
+      text-decoration: underline;
+    }
+
+    .r a:link {
+      cursor: pointer;
       color: #1a0dab;
+    }
+
+    .r a:visited {
+      color:#609;
     }
 
     cite {
@@ -121,6 +171,33 @@
       font-style: normal;
       font-size: 14px;
     }
+
+    .spell_co {
+      margin: .33em 0 17px;
+      font-size: 18px;
+    }
+
+    .spell {
+      color: #dd4b39;
+    }
+    
+    .spell a {
+      text-decoration: none;
+    }
+
+    .spell a:hover {
+      text-decoration: underline;
+    }
+
+    .spell a:link {
+      cursor: pointer;
+      color: #1a0dab;
+    }
+
+    .spell a:visited {
+      color:#609;
+    }
+
 
     .pagination a {
       color: black;
@@ -157,31 +234,54 @@
       </form>
 
       <!-- google sign in/ sign out -->
-      %if ss_user is None:
+      % if ss_user is None:
       <a href = '/login' title = "Sign in" style = "float:right">
         <!-- display sign in button that will link to sign in page -->
         <img src = "/static/image/sign_in.png" width = 80>
       </a>
-      %end
-      %if ss_user is not None:
+      % end
+      % if ss_user is not None:
         <a href='/logout' title = "sign out">
           <img src = "/static/image/sign_out.png" width = 80 style = "float:right">
         </a>
         <img src = {{ss['picture']}} width = 45 style = "float:right;border-radius: 50%;overflow: hidden;">
-      %end
+      % end
     </h1>
 
     <!-- RESULT URL -->
-    <div class = "result">
-          %for (url, title) in url[5*(page-1):5*page]:
-          <a href= {{url}}>
-            <p> {{title}} </p>
-          </a>
-      <div style="white-space:nowrap">
-        <cite  class="ref">{{url}}</cite>
+    
+    <div class = "mw">
+      <!-- spell correction -->
+      % if correction is True:
+      <div class = "spell_co">
+        <span class = "spell">
+          Did you mean: <a href="/{{ss['corrected_string']}}">{{correctedKeywords}} </a>
+        </span>
       </div>
+      % end
 
-      %end
+      % if url is None:
+      <div>
+        <p> No result found. </p>
+      </div>
+      % end
+      % if url is not None:
+      <div class = "rcnt">
+        %for (url, title) in url[5*(page-1):5*page]:
+        <div class = "g">
+          <div class = "result">
+                <h3 class = "r">
+                  <a href= {{url}}>
+                     {{title}}
+                  </a>
+                </h3>
+          </div>
+          <div style="white-space:nowrap">
+            <cite  class="ref">{{url}}</cite>
+          </div>
+        </div>
+        %end
+      </div>
     </div>
 
     <!-- page choice -->
@@ -198,6 +298,6 @@
       % end
     </div>
 
-
+  %end
   </body>
 </html>

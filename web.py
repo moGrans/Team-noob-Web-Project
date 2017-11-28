@@ -7,6 +7,7 @@ from oauth2client.client import flow_from_clientsecrets
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
 from Database import database
+from autocorrect import spell
 import httplib2
 import requests
 import os
@@ -61,6 +62,19 @@ def index():
         # Handle the form submission
         keywords = request.query.get('keywords')
         splwords = keywords.split(' ')
+
+        correction = False
+        correctedwords = []
+        for word in splwords:
+            corrected = spell(word)
+            if corrected != word:
+                print corrected
+                correction = True
+            correctedwords.append(corrected)
+
+        print correctedwords
+        correctedKeywords = ' '.join(correctedwords)
+        print correctedKeywords
         # acquire keyword history
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
 
@@ -76,16 +90,23 @@ def index():
         # tuple = ( url, title )
         urls = db.findRelatedPageRank(splwords[0])
 
-        if not urls:
-            redirect("error_page.tpl")
+        # if not urls:
+        #     redirect("error_page.tpl")
 
         if page is None or page is "":
             page = 1
             query_string = "?keywords=" + keywords.replace(" ","+")
             ss['query_string'] = query_string
 
+        corrected_string = "?keywords=" + correctedKeywords.replace(" ","+")
+        ss['corrected_string'] = corrected_string
         page = int(page)
 
+        if urls is not None:
+            total_page = (len(urls) + 4)//5
+        else:
+            total_page = 0
+              
         # Return result page
         return template("query_result.tpl", keywords=keywords,
                         this_search=this_search,
@@ -95,7 +116,9 @@ def index():
                         user_kw=user_kw,
                         url = urls,
                         page = page,
-                        total_page = (len(urls) + 4)//5)
+                        correction = correction,
+                        correctedKeywords = correctedKeywords,
+                        total_page = total_page)
 
 
 
