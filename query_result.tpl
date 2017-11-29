@@ -197,20 +197,17 @@
       color:#609;
     }
 
-<<<<<<< HEAD
     .logo {
       position: absolute;
       float: left;
       left: 0;
     }
-=======
     .pagination {
       display: inline-block;
       position: absolute;
       bottom: 20px;
     }
 
->>>>>>> a6a6af79b49e58440d1e1be22e76b738cbba1f9f
     .pagination a {
       color: black;
       float: left;
@@ -229,7 +226,6 @@
     }
 
     .pagination a:hover:not(.active) {background-color: #ddd;}
-<<<<<<< HEAD
     
     .signin {
       position:relative;
@@ -259,15 +255,6 @@
       left: 165px;
     }
   
-=======
-
-    .result_not_found {
-      position: absolute;
-      bottom: 20px;
-      left: 30%;
-    }
-
->>>>>>> a6a6af79b49e58440d1e1be22e76b738cbba1f9f
   </style>
 
   <head>
