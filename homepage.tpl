@@ -106,24 +106,6 @@
   	</head>
 
   	<body>
-  		<!-- top bar -->
-		<div class = "topbar" align = right>	
-			<!-- user have not sign into a google account -->
-			%if ss_user is None:
-			<a href = '/login' title = "Sign in">
-				<!-- display sign in button that will link to sign in page -->
-				<img src = "/static/image/sign_in.png" width = 80>
-			</a>
-			%end
-			<!-- user log in to google account -->
-			%if ss_user is not None:	
-				<img src = {{ss['picture']}} width = 45 class = "profilepic">
-				<a href='/logout' title = "sign out">
-					<img src = "/static/image/sign_out.png" width = 80>
-				</a>
-			%end
-		</div>
-
   		<!-- search bar and logo -->
   		<div class = "searchbar">
 	  		<!-- logo image -->

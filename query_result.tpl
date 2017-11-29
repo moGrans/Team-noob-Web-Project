@@ -2,9 +2,9 @@
   <style>
     img {
       position: relative;
-      left: 8px;
+      left: 0px;
       top: 20px;
-      margin-right: 8px;
+      margin-right: 0px;
     }
 
     .sfbgx {
@@ -16,12 +16,14 @@
       top: 0;
       width: 100%;
       min-width: 1100px;
+      max-height: 80px;
     }
 
     input[type=text] {
       position: relative;
       top: 8px;
-      width: 40%;
+      min-width: 400px;
+      /* width: 40%; */
       padding: 8px 8px;
       margin-left: 6px;
       margin-right: 6px;
@@ -35,23 +37,23 @@
 
     /*style of search box when clikced on*/
     input[type=text]:focus {
-        border: 1px solid #a1abba;
         border-radius: 3px;
-        box-shadow: 4px 4px 12px #a1abba;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 3px #a1abba;
     }
 
     /*style of search box when hover*/
     input[type=text]:hover {
-        border: 2px solid #4286f4;
         border-radius: 4px;
-        box-shadow: 4px 4px 8px #a1abba;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 4px #a1abba;
     }
 
     /*style of submit button*/
     input[type=submit] {
       position: relative;
       top: 8px;
-      width: 10%;
+      min-width: 28px;
       background-color: #4CAF50;
       color: white;
       padding: 8px 8px;
@@ -71,16 +73,6 @@
     div {
       margin: 0;
       padding: 0;
-    }
-
-    table {
-        position: relative;
-        left: 60;
-        top: 10;
-        border-collapse: collapse;
-        width: 70%;
-        font-family : "Myriad Web",Verdana,Helvetica,Arial,sans-serif;
-
     }
 
     th, td {
@@ -108,8 +100,11 @@
     }
 
     #searchform {
-      float: left;
-      margin-right: 10px;
+      position: relative;
+      max-width: 600px;
+      left: 0px;
+      margin-left: 4px;
+      margin-right: 4px;
     }
     
     h3 {
@@ -121,10 +116,13 @@
       -webkit-margin-end: 0px;
       font-weight: normal;
     }
+
     .mw {
-      max-width: 1197px;
-      margin-top: 40px;
-      padding: 0 90px;
+      position: relative;
+      /* max-width: 1197px; */
+      top: 20px;
+      margin-top: 80px;
+      padding: 0 165px;
     }
 
     .rcnt {
@@ -179,6 +177,7 @@
 
     .spell {
       color: #dd4b39;
+      font-family: arial,sans-serif;
     }
     
     .spell a {
@@ -198,7 +197,11 @@
       color:#609;
     }
 
-
+    .logo {
+      position: absolute;
+      float: left;
+      left: 0;
+    }
     .pagination a {
       color: black;
       float: left;
@@ -215,6 +218,35 @@
     }
 
     .pagination a:hover:not(.active) {background-color: #ddd;}
+    
+    .signin {
+      position:relative;
+      left: 800px;
+      top: 0;
+    }
+
+    .signin-button {
+      min-width: 28px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 8px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .signin-button:hover {
+        background-color: #45a049;
+    }
+    
+    .searchbox {
+      position: relative;
+      left: 165px;
+    }
+  
   </style>
 
   <head>
@@ -222,32 +254,21 @@
   </head>
   <body>
     <!-- top right search bar -->
-    <div class="sfbgx"></div>
-    <h1>
-    <div id = "searchform" align = left>
-      <table id = "searchhistory">
-      <a href = "/" title = "Go to homepage">
-        <img src = "/static/image/test_logo.png" width = 160></a>
-      <form method="get" action="/">
-          <input type='text' name='keywords'>
-          <input type='submit' value='Search'>
-      </form>
-
-      <!-- google sign in/ sign out -->
-      % if ss_user is None:
-      <a href = '/login' title = "Sign in" style = "float:right">
-        <!-- display sign in button that will link to sign in page -->
-        <img src = "/static/image/sign_in.png" width = 80>
-      </a>
-      % end
-      % if ss_user is not None:
-        <a href='/logout' title = "sign out">
-          <img src = "/static/image/sign_out.png" width = 80 style = "float:right">
-        </a>
-        <img src = {{ss['picture']}} width = 45 style = "float:right;border-radius: 50%;overflow: hidden;">
-      % end
-    </h1>
-
+    <div class="sfbgx">
+      <div id = "searchform">
+        <!-- <table id = "searchhistory"> -->
+        <div class = "logo">
+          <a href = "/" title = "Go to homepage">
+            <img src = "/static/image/test_logo.png" width = 160></a>
+        </div>
+        <div class = "searchbox">
+          <form method="get" action="/">
+              <input type='text' name='keywords'>
+              <input type='submit' value='Search'>
+          </form>
+      </div>
+    </div>
+  </div>
     <!-- RESULT URL -->
     
     <div class = "mw">
