@@ -205,8 +205,8 @@
       padding: 8px 16px;
       text-decoration: none;
       transition: background-color .3s;
-      position: relative;
-      top:150px;
+      position: absolute;
+      bottom: 20px;
     }
 
     .pagination a.active {
@@ -215,6 +215,13 @@
     }
 
     .pagination a:hover:not(.active) {background-color: #ddd;}
+
+    .result_not_found {
+      position: absolute;
+      bottom: 20px;
+      left: 30%;
+    }
+
   </style>
 
   <head>
@@ -229,7 +236,7 @@
       <a href = "/" title = "Go to homepage">
         <img src = "/static/image/test_logo.png" width = 160></a>
       <form method="get" action="/">
-          <input type='text' name='keywords'>
+          <input type='text' name='keywords' placeholder={{keywords}}>
           <input type='submit' value='Search'>
       </form>
 
@@ -261,8 +268,9 @@
       % end
 
       % if url is None:
-      <div>
-        <p> No result found. </p>
+      <div class = "result_not_found">
+        <img src = "/static/image/result_not_found.png" width= 600>
+        <!-- <p> No result found. </p> -->
       </div>
       % end
       % if url is not None:
