@@ -197,27 +197,39 @@
       color:#609;
     }
 
+<<<<<<< HEAD
     .logo {
       position: absolute;
       float: left;
       left: 0;
     }
+=======
+    .pagination {
+      display: inline-block;
+      position: absolute;
+      bottom: 20px;
+    }
+
+>>>>>>> a6a6af79b49e58440d1e1be22e76b738cbba1f9f
     .pagination a {
       color: black;
       float: left;
       padding: 8px 16px;
       text-decoration: none;
       transition: background-color .3s;
-      position: relative;
-      top:150px;
+      border: 1px solid #ddd;
+/*      position: absolute;
+      bottom: 20px;*/
     }
 
     .pagination a.active {
         background-color: #4CAF50;
         color: white;
+        border: 1px solid #4CAF50;
     }
 
     .pagination a:hover:not(.active) {background-color: #ddd;}
+<<<<<<< HEAD
     
     .signin {
       position:relative;
@@ -247,6 +259,15 @@
       left: 165px;
     }
   
+=======
+
+    .result_not_found {
+      position: absolute;
+      bottom: 20px;
+      left: 30%;
+    }
+
+>>>>>>> a6a6af79b49e58440d1e1be22e76b738cbba1f9f
   </style>
 
   <head>
@@ -282,8 +303,8 @@
       % end
 
       % if url is None:
-      <div>
-        <p> No result found. </p>
+      <div class = "result_not_found">
+        <img src = "/static/image/result_not_found.png" width= 600>
       </div>
       % end
       % if url is not None:
@@ -299,6 +320,12 @@
           </div>
           <div style="white-space:nowrap">
             <cite  class="ref">{{url}}</cite>
+          </div>         
+          <div id = "url_content">
+            <script type="text/javascript"> 
+             document.write("web content...... need from back end ......");
+
+            </script>
           </div>
         </div>
         %end
@@ -306,19 +333,22 @@
     </div>
 
     <!-- page choice -->
-    <div class="pagination" align="center">
-      % if page is not 1:
-        <a href="/{{ss['query_string']}}&page=1">&laquo;</a>
-      % end
-      <a class="active" href="#">{{page}}</a>
-      % for npage in range(page+1,page+min(5,total_page - page)):
-        <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
-      % end
-      % if page is not total_page:
-        <a href="/{{ss['query_string']}}&page={{total_page}}">&raquo;</a>
-      % end
+    <div class = "page_center" align="center">
+      <div class="pagination">
+        % if page is not 1:
+          <a href="/{{ss['query_string']}}&page=1">❮</a>
+        % end
+        <a class="active" href="#">{{page}}</a>
+        % for npage in range(page+1,page+min(5,total_page - page)):
+          <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+        % end
+        % if page is not total_page:
+          <a href="/{{ss['query_string']}}&page={{total_page}}">❯</a>
+        % end
+      </div>
     </div>
 
   %end
   </body>
+
 </html>
