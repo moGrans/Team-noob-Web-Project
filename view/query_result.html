@@ -15,14 +15,13 @@
       left: 0;
       top: 0;
       width: 100%;
-      min-width: 1100px;
       max-height: 80px;
     }
 
     input[type=text] {
       position: relative;
       top: 8px;
-      min-width: 400px;
+      min-width: 500px;
       /* width: 40%; */
       padding: 8px 8px;
       margin-left: 6px;
@@ -259,6 +258,7 @@
 
   <head>
       <title>Stinky Fish: search result</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <!-- top right search bar -->
@@ -271,7 +271,7 @@
         </div>
         <div class = "searchbox">
           <form method="get" action="/">
-              <input type='text' name='keywords'>
+              <input type='text' name='keywords' value={{keywords}}>
               <input type='submit' value='Search'>
           </form>
       </div>
@@ -326,7 +326,7 @@
           <a href="/{{ss['query_string']}}&page=1">❮</a>
         % end
         <a class="active" href="#">{{page}}</a>
-        % for npage in range(page+1,page+min(5,total_page - page)):
+        % for npage in range(page+1,page+min(5,total_page - page + 1)):
           <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
         % end
         % if page is not total_page:

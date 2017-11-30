@@ -6,14 +6,14 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import flow_from_clientsecrets
 from googleapiclient.errors import HttpError
 from googleapiclient.discovery import build
-from Database import database
+from module.Database import database
 from autocorrect import spell
 import httplib2
 import requests
 import os
 
 # import helper function in recording keyword history
-import kw_his
+from module import kw_his
 
 # Google client information
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
@@ -57,7 +57,7 @@ def index():
         ss.pop('query_string',None)
         ss.pop('keywords',None)
         # Home Page
-        return template("homepage.tpl", ss_user=ss_user, ss=ss)
+        return template("view/homepage", ss_user=ss_user, ss=ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
@@ -108,7 +108,7 @@ def index():
             total_page = 0
               
         # Return result page
-        return template("query_result.tpl", keywords=keywords,
+        return template("view/query_result", keywords=keywords,
                         this_search=this_search,
                         ss=ss,
                         ss_user=ss_user,
@@ -202,7 +202,11 @@ def log_out():
 # import static file for logos/images
 @route('/static/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root=os.getcwd())
+    return static_file(filepath, root='./static')
+
+@route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='./static')
 
 # # test error return page
 # @route('/404')
@@ -213,7 +217,7 @@ def server_static(filepath):
 # error page
 @error(404)
 def error404(error):
-    return template("error_page.tpl")
+    return template("view/error_page")
 
 
 # run the created web page

@@ -1,2 +1,0 @@
-doc_id:423 | word_id:1426
-http://www.eecg.toronto.edu/
