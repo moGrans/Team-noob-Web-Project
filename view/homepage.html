@@ -8,28 +8,21 @@
   	</head>
 
   	<body>
-  		<!-- search bar and logo -->
-  		<div class = "searchbar">
-	  		<!-- logo image -->
-	  		<img id = "logo" src = "/static/image/test_logo.png">
-	  		<br>
-	  		<!-- input filed for search -->
-		    <form method="get" action="/">
-		        <input type='text' name='keywords'>
-		    	<input type='submit' value='Search'>
-		    </form>
-		</div>
-
-		<!-- 10 recent search keyword for google user-->
-		<div class = "recentKW">
-		%if ss_user is not None:
-			<h3 align="center">Recent 10 Keywords</h2>
-			<table align = center>
-			% for word in ss[ss_user].recent:
-				<tr><td>{{word}}</td></tr>
-			%end
-			</table>
-		%end
+		<!-- search bar and logo -->
+		<div class = "container">
+			<!-- logo image -->
+			<div class = "box logobox">
+				<img id = "logo" src = "/static/image/test_logo.png">
+			</div>
+			<!-- input filed for search -->
+			<div class = "box main">
+				<form method="get" action="/" class="sform">
+					<div class = "searchbox">
+							<input type='text' name='keywords'>
+							<input type='submit' value='Search'>
+					</div>
+				</form>
+			</div>
 		</div>
   	</body>
 </html>
