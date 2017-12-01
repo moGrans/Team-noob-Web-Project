@@ -15,4 +15,5 @@ data/*
 *.pem
 *.pyproj
 *.suo
+*.sln
 settings.json

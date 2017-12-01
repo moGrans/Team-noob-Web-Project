@@ -2,13 +2,15 @@ import datetime
 import operator
 import pymongo
 import pprint
+#
+# CONNECTION_STR = \
+#     "mongodb://Gransy:dfvGhUj068c9YqiA\
+# @cluster0-shard-00-00-chyjq.mongodb.net:27017,\
+# cluster0-shard-00-01-chyjq.mongodb.net:27017,\
+# cluster0-shard-00-02-chyjq.mongodb.net:27017/\
+# test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
 
-CONNECTION_STR = \
-    "mongodb://Gransy:dfvGhUj068c9YqiA\
-@cluster0-shard-00-00-chyjq.mongodb.net:27017,\
-cluster0-shard-00-01-chyjq.mongodb.net:27017,\
-cluster0-shard-00-02-chyjq.mongodb.net:27017/\
-test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+CONNECTION_STR = "mongodb://localhost"
 
 class database():
 
