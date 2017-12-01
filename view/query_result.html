@@ -1,0 +1,86 @@
+<html>
+
+  <head>
+      <title>Stinky Fish: search result</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="stylesheet" href="/static/css/query_result.css">
+  </head>
+  <body>
+    <!-- top right search bar -->
+    <div class="sfbgx">
+      <div id = "searchform">
+        <!-- <table id = "searchhistory"> -->
+        <div class = "logo">
+          <a href = "/" title = "Go to homepage">
+            <img src = "/static/image/test_logo.png" width = 160></a>
+        </div>
+        <div class = "searchbox">
+          <form method="get" action="/">
+              <input type='text' name='keywords' value={{keywords}}>
+              <input type='submit' value='Search'>
+          </form>
+      </div>
+    </div>
+  </div>
+    <!-- RESULT URL -->
+    
+    <div class = "mw">
+      <!-- spell correction -->
+      % if correction is True:
+      <div class = "spell_co">
+        <span class = "spell">
+          Did you mean: <a href="/{{ss['corrected_string']}}">{{correctedKeywords}} </a>
+        </span>
+      </div>
+      % end
+
+      % if url is None:
+      <div class = "result_not_found">
+        <img src = "/static/image/result_not_found.png" width= 600>
+      </div>
+      % end
+      % if url is not None:
+      <div class = "rcnt">
+        %for (url, title) in url[5*(page-1):5*page]:
+        <div class = "g">
+          <div class = "result">
+                <h3 class = "r">
+                  <a href= {{url}}>
+                     {{title}}
+                  </a>
+                </h3>
+          </div>
+          <div style="white-space:nowrap">
+            <cite  class="ref">{{url}}</cite>
+          </div>         
+          <div id = "url_content">
+            <script type="text/javascript"> 
+             document.write("web content...... need from back end ......");
+
+            </script>
+          </div>
+        </div>
+        %end
+      </div>
+    </div>
+
+    <!-- page choice -->
+    <div class = "page_center" align="center">
+      <div class="pagination">
+        % if page is not 1:
+          <a href="/{{ss['query_string']}}&page=1">❮</a>
+        % end
+        <a class="active" href="#">{{page}}</a>
+        % for npage in range(page+1,page+min(5,total_page - page + 1)):
+          <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+        % end
+        % if page is not total_page:
+          <a href="/{{ss['query_string']}}&page={{total_page}}">❯</a>
+        % end
+      </div>
+    </div>
+
+  %end
+  </body>
+
+</html>
