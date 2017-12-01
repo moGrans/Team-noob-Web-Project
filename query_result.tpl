@@ -198,10 +198,15 @@
       color:#609;
     }
 
+    .page_center {
+      text-align: center;
+      margin-top: 100px;
+      float: bottom;
+      position: relative;
+    }
+
     .pagination {
       display: inline-block;
-      position: absolute;
-      bottom: 20px;
     }
 
     .pagination a {
@@ -211,6 +216,7 @@
       text-decoration: none;
       transition: background-color .3s;
       border: 1px solid #ddd;
+      font-family: arial,sans-serif;
 /*      position: absolute;
       bottom: 20px;*/
     }
@@ -281,7 +287,7 @@
       % end
       % if url is not None:
       <div class = "rcnt">
-        %for (url, title) in url[5*(page-1):5*page]:
+        % for (url, title) in url[5*(page-1):5*page]:
         <div class = "g">
           <div class = "result">
                 <h3 class = "r">
@@ -302,16 +308,26 @@
         </div>
         %end
       </div>
+      % end
     </div>
 
     <!-- page choice -->
+    <!-- if total number of pages is greater than 5, then show 5 page option -->
+    % if total_page is not 1:
     <div class = "page_center" align="center">
       <div class="pagination">
+        <a href="/{{ss['query_string']}}&page=1">❮</a>
+        
+        % if total_page - 3 < page:
+          % for npage in range(1, 5 - (total_page - page) - 1):
+            <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
+          % end
+        % end
         % if page is not 1:
-          <a href="/{{ss['query_string']}}&page=1">❮</a>
+          <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
         % end
         <a class="active" href="#">{{page}}</a>
-        % for npage in range(page+1,page+min(5,total_page - page)):
+        % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
           <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
         % end
         % if page is not total_page:
@@ -319,6 +335,7 @@
         % end
       </div>
     </div>
+    % end
 
   %end
   </body>
