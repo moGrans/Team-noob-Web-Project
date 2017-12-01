@@ -67,7 +67,7 @@
 
     <!-- page choice -->
     <!-- if total number of pages is greater than 5, then show 5 page option -->
-    % if total_page is not 1:
+    % if total_page > 1:
     <div class = "page_center" align="center">
       <div class="pagination">
         <a href="/{{ss['query_string']}}&page=1">❮</a>
