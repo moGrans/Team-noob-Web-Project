@@ -16,4 +16,5 @@ data/*
 *.pyproj
 *.suo
 *.sln
+tags
 settings.json
