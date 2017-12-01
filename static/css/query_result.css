@@ -200,10 +200,16 @@ cite {
   float: left;
   left: 0;
 }
+
+.page_center {
+      text-align: center;
+      margin-top: 100px;
+      float: bottom;
+      position: relative;
+}
+
 .pagination {
   display: inline-block;
-  position: absolute;
-  bottom: 20px;
 }
 
 .pagination a {
@@ -213,6 +219,7 @@ cite {
   text-decoration: none;
   transition: background-color .3s;
   border: 1px solid #ddd;
+  font-family: arial,sans-serif;
 /*      position: absolute;
   bottom: 20px;*/
 }

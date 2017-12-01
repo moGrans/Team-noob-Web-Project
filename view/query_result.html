@@ -63,15 +63,25 @@
         %end
       </div>
     </div>
+    % end
 
     <!-- page choice -->
+    <!-- if total number of pages is greater than 5, then show 5 page option -->
+    % if total_page is not 1:
     <div class = "page_center" align="center">
       <div class="pagination">
+        <a href="/{{ss['query_string']}}&page=1">❮</a>
+        
+        % if total_page - 3 < page:
+          % for npage in range(1, 5 - (total_page - page) - 1):
+            <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
+          % end
+        % end
         % if page is not 1:
-          <a href="/{{ss['query_string']}}&page=1">❮</a>
+          <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
         % end
         <a class="active" href="#">{{page}}</a>
-        % for npage in range(page+1,page+min(5,total_page - page + 1)):
+        % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
           <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
         % end
         % if page is not total_page:
@@ -79,8 +89,8 @@
         % end
       </div>
     </div>
+    % end
 
-  %end
   </body>
 
 </html>
