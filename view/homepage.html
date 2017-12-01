@@ -6,6 +6,27 @@
 		  <link rel="stylesheet" href="/static/css/homepage.css">
 
   	</head>
+  	
+  	<script type="text/javascript">
+  		window.onload = function(){
+            var bsDiv = document.getElementById("mouse_follower");
+            var x, y;
+    		// On mousemove use event.clientX and event.clientY to set the location of the div to the location of the cursor:
+            window.addEventListener('mousemove', function(event) {
+	            x = event.clientX;
+	            y = event.clientY;                    
+	            if ( typeof x !== 'undefined' ) {
+	                bsDiv.style.left = x + "px";
+	                bsDiv.style.top = y + "px";
+	            }
+            }, false);
+        }
+  	</script>
+
+  	<!-- mouse follower: fish bone -->
+  	<div id = "mouse_follower">
+  		<img src = "/static/image/fish_bone.png" width=100px>
+  	</div>
 
   	<body>
 		<!-- search bar and logo -->
@@ -26,3 +47,5 @@
 		</div>
   	</body>
 </html>
+
+

@@ -84,6 +84,11 @@
     }
 }
 
+#mouse_follower {
+    transition: transform .5s;
+    position: fixed;
+}
+
 .container {
     display: flex;
     flex-wrap: wrap;
