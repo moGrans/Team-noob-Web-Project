@@ -51,7 +51,6 @@ def aws_moduleInstall():
             print "\nFailed installing %s" % eachModule.split()[-1]
             print result[1]
             print "Terminating..."
-            raw_input("Press key to exit.......")
             exit(-1)
 
     print "Finished installing modules"
@@ -60,14 +59,13 @@ def aws_mongodbDeployment():
     print "Prepre to deploy mongoDB"
     print "\nMongoDB: Starting up"
 
-    mongoDeploy = ["sudo service mongod start",
-                   "mongorestore /home/ubuntu/Team-noob-Web-Project/dump"]
+    mongoDeploy = ["sudo service mongod start &",
+                   "sudo mongorestore /home/ubuntu/Team-noob-Web-Project/dump"]
 
     result = _run_command_set(mongoDeploy,'MongoDB')
 
     if not result:
         print "Terminating..."
-        raw_input("Press key to exit.......")
         exit(-1)
         
 def _run_command_set(commandSet, procName):

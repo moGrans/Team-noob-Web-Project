@@ -169,7 +169,16 @@ def processAWS():
 
     print "Ready to boot up the website..."
 
-    print "Not there yet, so far so good"
+    transport = SSH_CLIENT.get_transport()
+    channel = transport.open_session()
+    channel.exec_command('sudo python ~/Team-noob-Web-Project/web.py > /dev/null 2>&1 &')
+    
+    print "Successfully booted up the website"
+
+    print "IP: %s" % instList[0].ip_address
+    print "DNS: %s" % instList[0].public_dns_name
+
+    print "Finished!"
 
 
 def client_exec(command, progName):
