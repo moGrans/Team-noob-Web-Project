@@ -103,7 +103,7 @@ def index():
         page = int(page)
 
         if urls is not None:
-            total_page = (len(urls) + 4)//5
+            total_page = (len(urls) + 9)//10
         else:
             total_page = 0
               
