@@ -84,6 +84,27 @@
     }
 }
 
+.mouse_follow_left {
+        -moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+}
+.mouse_follow_right {
+        -moz-transform: scaleX(1);
+        -o-transform: scaleX(1);
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+}
+
+#mouse_follower {
+    transition: transform .1s
+}
+
 .container {
     display: flex;
     flex-wrap: wrap;
