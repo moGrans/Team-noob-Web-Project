@@ -61,7 +61,7 @@ def index():
         ss.pop('query_string',None)
         ss.pop('keywords',None)
         # Home Page
-        return template("view/homepage", ss_user=ss_user, ss=ss)
+        return template("view/homepage.html", ss_user=ss_user, ss=ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
@@ -112,7 +112,7 @@ def index():
             total_page = 0
               
         # Return result page
-        return template("view/query_result", keywords=keywords,
+        return template("view/query_result.html", keywords=keywords,
                         this_search=this_search,
                         ss=ss,
                         ss_user=ss_user,
@@ -221,7 +221,7 @@ def server_static(filepath):
 # error page
 @error(404)
 def error404(error):
-    return template("view/error_page")
+    return template("view/error_page.html")
 
 
 # run the created web page
