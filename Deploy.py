@@ -121,11 +121,7 @@ def processAWS():
     print "Connecting to instance terminal..."
 
     global SSH_CLIENT, KEY_DIR
-<<<<<<< HEAD
     KEY_DIR = os.getcwd() + '/KeyPairs/' + KEY_NAME + '.pem'
-=======
-    KEY_DIR = os.getcwd() + '\\KeyPairs\\' + KEY_NAME + '.pem'
->>>>>>> 68cc0e156654fe02fd90992965aa87ae53280b60
 
     print "Waiting for instance ready check"
 
