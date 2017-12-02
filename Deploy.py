@@ -10,7 +10,7 @@ GIT_CLONE = "https://github.com/moGrans/Team-noob-Web-Project.git"
 
 SELECTED_AMI_IMAGE = 'ami-8caa1ce4'
 SELECTED_INSTANCE_TYPE = 't1.micro'
-KEY_NAME = 'ATESTINSTANCE666'
+KEY_NAME = 'TRY'
 
 # Connection for accessing AWS terminal
 SSH_CLIENT = None
@@ -165,7 +165,9 @@ def processAWS():
     
     print "Executing deployment wizard..."
 
-    client_exec("sudo python ~/Team-noob-Web-Project/setup.py", "Setup")
+    aws_componentInstall()
+    aws_moduleInstall()
+    aws_mongodbDeployment()  
 
     print "Ready to boot up the website..."
 
@@ -180,6 +182,95 @@ def processAWS():
 
     print "Finished!"
 
+def aws_componentInstall():
+    print "Prepare to install system component on aws"
+
+    componentsInstall = ["sudo apt-get update", 
+                         "sudo apt-get -y install python-pip"]
+
+    result = _run_command_set(componentsInstall, "Python-setup")
+
+ 
+    if not result == 0:
+        print "Terminating..."
+        raw_input("Press key to exit.......")
+        exit(-1)
+    
+    print "Installing mongoDB..."
+
+    mongoDBInstall = ["sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6",
+                      'echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list',
+                      "sudo apt-get update",
+                      "sudo apt-get install -y mongodb-org"]
+
+    result = _run_command_set(mongoDBInstall, "Mongo")
+
+    if not result == 0:
+        print "Terminating..."
+        raw_input("Press key to exit.......")
+        exit(-1)
+
+    print "Finished system component"
+
+def aws_moduleInstall():
+    """ Installing essential module for website operating """
+
+    print "Prepare to install essential modules"
+
+    moduleInstall = ["sudo pip install boto",
+                     "sudo pip install beaker",
+                     "sudo pip install bottle",
+                     "sudo pip install oauth2client",
+                     "sudo pip install autocorrect",
+                     "sudo pip install --upgrade google-api-python-client",
+                     "sudo pip install requests",
+                     "sudo pip install httplib2",
+                     "sudo pip install pymongo"]
+
+    for eachModule in moduleInstall:
+
+        stdin, stdout, stderr = SSH_CLIENT.exec_command(eachModule)
+        exit_status = stdout.channel.recv_exit_status()
+
+        if exit_status == 0:
+            print "\nSuccessfully installed %s" % eachModule.split()[-1]
+        else:
+            print "\nFailed installing %s" % eachModule.split()[-1]
+            print stderr
+            print "Terminating..."
+            exit(-1)
+
+    print "Finished installing modules"
+
+def aws_mongodbDeployment():
+    print "Prepre to deploy mongoDB"
+    print "\nMongoDB: Starting up"
+
+    stdin, stdout, stderr = SSH_CLIENT.exec_command("sudo service mongod start")
+    exit_status = stdout.channel.recv_exit_status()
+
+    mongoDeploy = ["sudo mongorestore /home/ubuntu/Team-noob-Web-Project/dump"]
+
+    result = _run_command_set(mongoDeploy,'MongoDB')
+
+    if not result == 0:
+        print "Terminating..."
+        exit(-1)
+        
+def _run_command_set(commandSet, procName):
+
+    for eachCommand in commandSet:
+        stdin, stdout, stderr = SSH_CLIENT.exec_command(eachCommand)
+        exit_status = stdout.channel.recv_exit_status()
+
+        if exit_status == 0:
+            print "%s: In progress..." % procName
+        else:
+            print "%s: Encounters a unsolvable problem:" % procName
+            print stderr
+            return -1
+
+    return 0
 
 def client_exec(command, progName):
     stdin, stdout, stderr = SSH_CLIENT.exec_command(command)
@@ -196,8 +287,4 @@ def client_exec(command, progName):
 
 if __name__ == "__main__":
     processAWS()
-    # aws_componentInstall()
-    # aws_moduleInstall()
-    # aws_gitClone()
-    # aws_mongodbDeployment()
     exit(0)
