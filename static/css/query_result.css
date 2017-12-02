@@ -53,17 +53,37 @@ cite {
 .container {
     display: flex;
     flex-wrap: wrap;
+    animation: 0.5s ease-out 0s 1 slideUp;
 }
 
 .box {
   width: 100%;
 }
 
+@keyframes slideUp {
+  0% {
+    transform: translateY(2%);
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slideInFromAbove {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}
+
 @media screen and (orientation: landscape) {
   .pagecenter {
     display: none;
   }
-
   .cardlink {
     display: none;
   }
@@ -95,6 +115,18 @@ cite {
 
   .logo {
     width: 160px;
+    animation: 0.5s ease-out 0s 1 slideInFromAbove;
+    -webkit-transition: all 0.2s linear;
+       -moz-transition: all 0.2s linear;
+         -o-transition: all 0.2s linear;
+            transition: all 0.2s linear;
+  }
+
+  .logo:hover {
+    -webkit-transform: rotate(-2deg) scale(1.08);
+       -moz-transform: rotate(-2deg) scale(1.08);
+         -o-transform: rotate(-2deg) scale(1.08);
+            transform: rotate(-2deg) scale(1.08);
   }
 
   result {
@@ -105,7 +137,6 @@ cite {
     position: relative;
     top: 8px;
     background-color: #f7f8fa;
-    transition: background-color .3s;
     min-width: 500px;
     /* width: 40%; */
     padding: 8px 8px;
@@ -116,31 +147,42 @@ cite {
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 15px;
-
+    transition: background-color .5s, min-width .5s, box-shadow .5s;
+    -webkit-transition: background-color .5s, min-width .5s, box-shadow .5s;
+    -moz-transition: background-color .5s, min-width .5s, box-shadow .5s;
+    -o-transition: background-color .5s, min-width .5s, box-shadow .5s;
   }
 
   /*style of search box when clikced on*/
   input[type=text]:focus {
       outline-style: none;
       border-radius: 3px;
+      min-width: 755px;
       background-color: #ffffff;
-      transition: background-color .3s;
       border: 1px solid #ccc;
       -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
       box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+      transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -webkit-transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -moz-transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -o-transition: background-color .5s, min-width .5s, box-shadow .5s;
   }
 
   /*style of search box when hover*/
   input[type=text]:hover {
       border-radius: 4px;
       border: 1px solid #ccc;
-      transition: box-shadow .3s;
       -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
       box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+      transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -webkit-transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -moz-transition: background-color .5s, min-width .5s, box-shadow .5s;
+      -o-transition: background-color .5s, min-width .5s, box-shadow .5s;
   }
 
   /*style of submit button*/
   input[type=submit] {
+    outline-style: none;
     position: relative;
     top: 8px;
     min-width: 28px;
@@ -318,10 +360,16 @@ cite {
   }
 
   input[type=text]:focus {
+      outline-style: none;
       border: 1px solid #d9d9d9;
   }
 
+  input [type=submit]:focus {
+    outline-style: none;
+  }
+
   input[type=submit] {
+      outline-style: none;
       flex: none;
       position: relative;
       height: 38px;

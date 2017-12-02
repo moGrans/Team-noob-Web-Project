@@ -19,8 +19,12 @@ from module import kw_his
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
+TEST_HOST = 'localhost'
+TEST_PORT = '8080'
+LANUCH_HOST = '0.0.0.0'
+LANUCH_PORT = '80'
 # Redirect url to be changed if instance is to be relauched
-REDIRECT_URI = 'localhost:8080/redirect'
+REDIRECT_URI = '0.0.0.0:80/redirect'
 REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke'
 
 token = None
@@ -225,4 +229,4 @@ if __name__ == '__main__':
     print 'Initializing database'
     db = database()
     print 'Booting up web service'
-    run(app=wsgi_app, host='localhost',port=8080, reloader=True)
+    run(app=wsgi_app, host=LANUCH_HOST,port=LANUCH_PORT, reloader=True)

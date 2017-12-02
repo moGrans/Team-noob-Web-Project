@@ -2,7 +2,7 @@ import datetime
 import operator
 import pymongo
 import pprint
-#
+
 # CONNECTION_STR = \
 #     "mongodb://Gransy:dfvGhUj068c9YqiA\
 # @cluster0-shard-00-00-chyjq.mongodb.net:27017,\

@@ -7,7 +7,6 @@
   </head>
   <body>
     <!-- top right search bar -->
-    <div class = "container">
       <div class="box sfbgx">
         <div class = "box logobox">
             <a href = "/" title = "Go to homepage">
@@ -25,7 +24,7 @@
         </div>
       </div>
     <!-- RESULT URL -->
-    
+    <div class = "container">
         <!-- spell correction -->
         % if correction is True:
         <div class = "box card spell_co">
@@ -37,7 +36,7 @@
 
         % if url is None:
         <div class = "box card result_not_found">
-          <img src = "/static/image/result_not_found.png" width= 600>
+          <img src = "/static/image/result_not_found.png" width = 100% max-width = 600>
         </div>
         % end
         % if url is not None:
@@ -71,22 +70,51 @@
         % if total_page > 1:
         <div class = "box page_center" align="center">
           <div class="pagination">
-            <a href="/{{ss['query_string']}}&page=1">❮</a>
+            % if page > 2:
+              <a href="/{{ss['query_string']}}&page=1">❮❮</a>
+            % end
+            % if page > 1:
+            <a href="/{{ss['query_string']}}&page={{page-1}}">❮</a>
+            % end
             
-            % if total_page - 3 < page:
-              % for npage in range(1, 5 - (total_page - page) - 1):
-                <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
+            % if total_page <= 5:
+              % if page is 1:
+                <a class="active" href="#">{{page}}</a>
+                % for npage in range(2, total_page+1):
+                  <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                % end
+              % end
+              % if page is not 1:
+                % for npage in range(1, page):
+                  <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                %end
+                <a class="active" href="#">{{page}}</a>
+                % if page is not total_page:
+                  % for npage in range(page, total_page + 1):
+                    <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                  % end
+                % end
               % end
             % end
-            % if page is not 1:
-              <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
+            % if total_page > 5:
+              % if total_page - 3 < page:
+                % for npage in range(1, 5 - (total_page - page) - 1):
+                  <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
+                % end
+              % end
+              % if page is not 1:
+                <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
+              % end
+              <a class="active" href="#">{{page}}</a>
+              % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
+                <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+              % end
             % end
-            <a class="active" href="#">{{page}}</a>
-            % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
-              <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+            % if page < total_page:
+              <a href="/{{ss['query_string']}}&page={{page+1}}">❯</a>
             % end
-            % if page is not total_page:
-              <a href="/{{ss['query_string']}}&page={{total_page}}">❯</a>
+            % if page < total_page - 1:
+              <a href="/{{ss['query_string']}}&page={{total_page}}">❯❯</a>
             % end
           </div>
         </div>
