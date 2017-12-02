@@ -48,6 +48,7 @@
     }
 
     input[type=submit] {
+        outline-style: none;
         flex: none;
         position: relative;
         width: 100px;
@@ -168,6 +169,7 @@
 
     input[type=submit] {
         flex: none;
+        outline-style: none;
         position: relative;
         height: 38px;
         background-color: #4CAF50;
