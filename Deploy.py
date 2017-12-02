@@ -165,7 +165,7 @@ def processAWS():
     
     print "Executing deployment wizard..."
 
-    client_exec("sudo python ~/Team-noob-Web-Project/setup.py", "Deployment wizard")
+    client_exec("sudo python ~/Team-noob-Web-Project/setup.py", "Setup")
 
     print "Ready to boot up the website..."
 

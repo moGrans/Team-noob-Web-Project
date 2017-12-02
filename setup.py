@@ -88,3 +88,4 @@ if __name__ == "__main__" :
     aws_componentInstall()
     aws_moduleInstall()
     aws_mongodbDeployment()    
+    exit(0)
