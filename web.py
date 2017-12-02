@@ -226,6 +226,8 @@ def error404(error):
 
 # run the created web page
 if __name__ == '__main__':
+    print 'Changing directory'
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     print 'Initializing database'
     db = database()
     print 'Booting up web service'
