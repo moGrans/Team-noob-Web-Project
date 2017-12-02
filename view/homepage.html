@@ -6,7 +6,50 @@
 
   	</head>
   	
-  	<script src = "mouse_follow.js"></script>
+  	<script>
+  		window.onload = function() {
+			var bone = document.getElementById("mouse_follower");
+			document.addEventListener("mousemove", getMouse); 
+
+			bone.style.position = "absolute"; //css		
+			var bonepos = {x:0, y:0};
+
+			setInterval(followMouse, 50);
+
+			var mouse = {x:0, y:0}; //mouse.x, mouse.y
+
+			var dir = "right";
+			function getMouse(e){
+				mouse.x = e.pageX;
+				mouse.y = e.pageY;
+				//Checking directional change
+				if(mouse.x > bonepos.x){
+		  			dir = "left";
+					} else {
+		  			dir = "right";
+				}
+			}
+
+			function followMouse(){
+				//1. find distance X , distance Y
+				var distX = mouse.x - bonepos.x;
+				var distY = mouse.y - bonepos.y;
+				//Easing motion
+				bonepos.x += distX/5;
+				bonepos.y += distY/2;
+				
+				bone.style.left = bonepos.x + "px";
+				bone.style.top = bonepos.y + "px";
+		  
+		        //Apply css class 
+		        if (dir == "right"){
+		          bone.setAttribute("class", "mouse_follow_right");
+		        } else {
+		          bone.setAttribute("class", "mouse_follow_left");        
+		        }	
+			}
+		}
+  	</script>
 
   	<!-- mouse follower: fish bone -->
   	<div id = "mouse_follower">
@@ -34,10 +77,54 @@
 		<!-- animated crocodile with moving eyes -->
 	  	<div class = "animated_crocodile">
 	  		<img id = "crocodile" src = "/static/image/crocodile.png">
-	  		<script src="eye_move.js"></script>
 	  		<div id="eyeleft">
   				<div id="pupilleft"></div>
 			</div>
+			<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+			<script type="text/javascript">
+					/************************ crocodile **************************/
+
+			var DrawEye = function(eyecontainer, pupil, eyeposx, eyeposy){
+				// Initialise core variables
+			  	var r = $(pupil).width()/2;
+			  	var center = {
+			    	x: $(eyecontainer).width()/2 - r, 
+			    	y: $(eyecontainer).height()/2 - r
+			  	};
+			  	var distanceThreshold = $(eyecontainer).width()/2 - r;
+			  	var mouseX = 0, mouseY = 0;
+			  
+			  	// Listen for mouse movement
+			  	$(window).mousemove(function(e){ 
+			    	var d = {
+			      		x: e.pageX - r - eyeposx - center.x,
+			      		y: e.pageY - r - eyeposy - center.y
+			    	};
+			    	var distance = Math.sqrt(d.x*d.x + d.y*d.y);
+			    	if (distance < distanceThreshold) {
+			      		mouseX = e.pageX - eyeposx - r;
+			      		mouseY = e.pageY - eyeposy - r;
+			    	} else {
+			      		mouseX = d.x / distance * distanceThreshold + center.x;
+			      		mouseY = d.y / distance * distanceThreshold + center.y;
+			    	}
+			  	});
+			  
+			  	// Update pupil location
+			  	var pupil = $(pupil);
+			  	var xp = 0, yp = 0;
+			  	var loop = setInterval(function(){
+			   		// change 1 to alter damping/momentum - higher is slower
+			    	xp += (mouseX - xp) / 1;
+			    	yp += (mouseY - yp) / 1;
+			    	pupil.css({left:xp, top:yp});    
+			  	}, 1);
+			};
+
+			var pariseye1 = new DrawEye("#eyeleft", "#pupilleft", 155, 600);
+
+
+			</script>
 	  	</div>
   	</body>
 
