@@ -10,7 +10,7 @@ GIT_CLONE = "https://github.com/moGrans/Team-noob-Web-Project.git"
 
 SELECTED_AMI_IMAGE = 'ami-8caa1ce4'
 SELECTED_INSTANCE_TYPE = 't1.micro'
-KEY_NAME = 'TRY'
+KEY_NAME = 'STINKYFISH'
 
 # Connection for accessing AWS terminal
 SSH_CLIENT = None
@@ -174,6 +174,8 @@ def processAWS():
     transport = SSH_CLIENT.get_transport()
     channel = transport.open_session()
     channel.exec_command('sudo python ~/Team-noob-Web-Project/web.py > /dev/null 2>&1 &')
+
+
     
     print "Successfully booted up the website"
 

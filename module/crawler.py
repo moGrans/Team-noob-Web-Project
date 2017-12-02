@@ -20,9 +20,9 @@
 
 import urllib2
 import urlparse
-from BeautifulSoup import *
 from collections import defaultdict
 import re
+from BeautifulSoup import *
 from Database import database
 import pagerank
 
@@ -80,6 +80,18 @@ class crawler(object):
         # document lexicon
         # doc_id -> document title
         self._doc_title = dict()
+
+        # word appearance
+        # word_id -> { doc_id:[index] }
+        self._word_appearance = dict()
+
+        # document content
+        # doc_id -> [ word_id in order they appear in text ]
+        self._doc_content = dict()
+
+        # Crawled document record
+        # doc_id -> if the document has been crawled
+        self._doc_id_crawled = dict()
         ##### End of newly added variables
 
         # add a link to our graph, and indexing info to the related page
@@ -102,6 +114,7 @@ class crawler(object):
         self._enter['h4'] = self._increase_font_factor(4)
         self._enter['h5'] = self._increase_font_factor(3)
         self._enter['title'] = visit_title
+        self._enter['p']
 
         # decrease the font size when we exit these tags
         self._exit['b'] = self._increase_font_factor(-2)
@@ -144,6 +157,9 @@ class crawler(object):
         self._font_size = 0
         self._curr_words = None
 
+        # keep track of advanced info that unique to each document
+        self._curr_index = 0
+        
         # get all urls into the queue
         try:
             with open(url_file, 'r') as f:
@@ -238,7 +254,18 @@ class crawler(object):
         self._doc_title[self._curr_doc_id] = title_text
 
         # TODO update document title for document id self._curr_doc_id
+    def _visit_p(self, elem):
+        """Called when visiting <p> tags. Basically, strip out only text in inside
+        the <p> tag, then process each word relating to its index and store in cache"""
 
+        only_text = elem.text
+
+        words_in_p = WORD_SEPARATORS.split(elem.string.lower())
+
+        for word in words_in_p:
+            word = word.strip()
+
+            
     def _visit_a(self, elem):
         """Called when visiting <a> tags."""
 
