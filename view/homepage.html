@@ -49,6 +49,44 @@
 		        }	
 			}
 		}
+
+		// $(".inputtable").keyup(function( ){
+		// 	var content = $(this).val();
+		// 	if(content == "") {
+        //     	$(".acomp").css("display","none");
+        //    		return ;
+        // 	}	
+		// 	var time = new Date().getTime();
+		// 	$.ajax({
+		// 		type:"get",
+		// 		url:"${pageContext.request.contextPath}/servlet/findBooksAjaxServlet",
+		// 		data:{name:content, time:time},
+		// 		success:function(data) {
+		// 			var res = data.split(",");
+		// 			var html = "";
+		// 			for(var i = 0 ;i < res.length; i++){
+		// 				html+="<div onclick='setSearch_onclick(this)' onmouseout='changeBackColor_out(this)' onmouseover='changeBackColor_over(this)'>"+res[i]+"</div>";
+		// 			}
+		// 			$("#context1").html(html);
+		// 			$("#context1").css("display","block");
+		// 		}
+		// 	});
+		// 
+		
+		window.autoComp = function() {
+			var hasValue = document.getElementById('inputtable').value;
+			if (!!hasValue) {
+				document.getElementById('acomp').style.display = 'block';
+			} else {
+				document.getElementById('acomp').style.display = 'none';
+			};
+		};
+
+		window.clickSuggs = function(ent) {
+			document.getElementById('acomp').style.display = 'none';
+			document.getElementById('inputtable').value = ent.innerText;
+		};
+
   	</script>
 
   	<!-- mouse follower: fish bone -->
@@ -67,8 +105,16 @@
 			<div class = "box main">
 				<form method="get" action="/" class="sform">
 					<div class = "searchbox">
-							<input type='text' name='keywords'>
+							<input type='text' name='keywords' autocomplete='off' id='inputtable' onkeyup="autoComp()">
 							<input type='submit' value='Search'>
+					</div>
+					<div id = "acomp">
+						<ul class = "suggs">
+							<li class = "entries" role="presentation" onclick="clickSuggs(this)">f</li>
+							<li class = "entries" role="presentation" onclick="clickSuggs(this)">fu</li>
+							<li class = "entries" role="presentation" onclick="clickSuggs(this)">fuc</li>
+							<li class = "entries" role="presentation" onclick="clickSuggs(this)">fuck</li>
+						</ul>
 					</div>
 				</form>
 			</div>
@@ -125,7 +171,7 @@
 
 
 			</script>
-	  	</div>
+		  </div>
   	</body>
 
   	
