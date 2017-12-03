@@ -39,7 +39,7 @@ class database():
 
         self.spellingChecker = None
 
-        WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
+        self.WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
     def insertIntoLexicon(self, _lexicon):
         """ Insert current crawled lexicon into mongoDB. """
