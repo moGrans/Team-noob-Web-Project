@@ -146,7 +146,7 @@
     animation: 0.6s ease-out 0s 1 slideUp;
 }
 
-.suggs {
+#suggs {
   display: block;
 }
 
@@ -204,7 +204,7 @@
       box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
     }
 
-    .suggs {
+    #suggs {
       background-color: #ffffff;
       font-family: arial,sans-serif;
       margin: 5px 0;
@@ -224,6 +224,15 @@
 
     .entries:hover {
       background-color: rgb(238, 238, 238);
+    }
+
+    .his {
+      color: #609;
+    }
+    
+    .clearhis {
+      text-align: center;
+      color:#1967D2;
     }
 
     input[type=text] {
@@ -316,7 +325,7 @@
     #pupilleft {
       width: 30px;
       height: 30px;
-      z-index: -98;
+      z-index: -1;
     }
 
     #eyeleft {
@@ -324,7 +333,7 @@
       height: 100px;
       left: 155px;
       bottom: 118px;
-      z-index: -99;
+      z-index: -1;
     }
 
     #crocodile {
@@ -362,7 +371,7 @@
 }
 
 #fish_bone {
-    z-index: 100;
+    z-index: 2000;
 }
 
 .container {
@@ -413,7 +422,7 @@
       animation: 0.3s ease-out 0s 1 sugges;
     }
 
-    .suggs {
+    #suggs {
       background-color: #ffffff;
       font-family: arial,sans-serif;
       margin: 0;
@@ -430,6 +439,15 @@
       -webkit-transition: background-color 0.2s;
       -moz-transition: background-color 0.2s;
       -o-transition: background-color 0.2s;
+    }
+
+    .his {
+      color: #609;
+    }
+    
+    .clearhis {
+      text-align: center;
+      color:#1967D2;
     }
 
     input[type=text] {

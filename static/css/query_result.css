@@ -17,6 +17,16 @@ body {
   text-decoration: none;
 }
 
+.his {
+  color: #609;
+}
+
+.clearhis {
+  text-align: center;
+  color:#1967D2;
+}
+
+
 hr {
   display: block;
   border: 0;
@@ -168,7 +178,7 @@ cite {
     position: absolute;
     top: 52px;
     left: 171px;
-    width: 755px;
+    width: 500px;
     border-radius: 3px;
     height: auto;
     box-sizing: border-box;
@@ -178,7 +188,7 @@ cite {
     box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
   }
 
-  .suggs {
+  #suggs {
     background-color: #ffffff;
     font-family: arial,sans-serif;
     margin: 5px 0;
@@ -187,7 +197,6 @@ cite {
   }
 
   .entries {
-    cursor: pointer;
     text-align: left;
     padding: 3px 8px;
     background-color: #ffffff;
@@ -227,7 +236,7 @@ cite {
       color: #000000;
       outline-style: none;
       border-radius: 3px;
-      min-width: 755px;
+      /* min-width: 755px; */
       background-color: #ffffff;
       border: 1px solid #ccc;
       -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
@@ -432,7 +441,7 @@ cite {
     animation: 0.3s ease-out 0s 1 sugges;
   }
 
-  .suggs {
+  #suggs {
     background-color: #ffffff;
     font-family: arial,sans-serif;
     margin: 0;
