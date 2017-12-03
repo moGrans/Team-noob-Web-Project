@@ -10,7 +10,7 @@ GIT_CLONE = "https://github.com/moGrans/Team-noob-Web-Project.git"
 
 SELECTED_AMI_IMAGE = 'ami-8caa1ce4'
 SELECTED_INSTANCE_TYPE = 't1.micro'
-KEY_NAME = 'STINKYFISH'
+KEY_NAME = 'STINKYFISH2'
 
 # Connection for accessing AWS terminal
 SSH_CLIENT = None
