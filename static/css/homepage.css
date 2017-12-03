@@ -150,7 +150,7 @@
   display: block;
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (min-width:815px) {
     #logo {
       bottom: 0px;
       left: 0px;
@@ -374,7 +374,7 @@
     width: 100%;
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (max-width:815px) {
     #logo {
         margin: 140px auto 0px;
         line-height: 0;

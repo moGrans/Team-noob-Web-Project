@@ -106,7 +106,7 @@ cite {
   display: none;
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (min-width:815px) {
   .pagecenter {
     display: none;
   }
@@ -388,7 +388,7 @@ cite {
   }
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (max-width:815px) {
   .sfbgx {
     height: 120px;
     text-align: center;
