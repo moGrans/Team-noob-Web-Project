@@ -1,11 +1,6 @@
 import bottle
 from bottle import route, Bottle, template, request, run, get, post, static_file, app, redirect, error
 from beaker.middleware import SessionMiddleware
-from oauth2client import client
-from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.client import flow_from_clientsecrets
-from googleapiclient.errors import HttpError
-from googleapiclient.discovery import build
 from module.Database import database
 from autocorrect import spell
 import httplib2
@@ -15,17 +10,12 @@ import os
 # import helper function in recording keyword history
 from module import kw_his
 
-# Google client information
-CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
-CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
-SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
 TEST_HOST = 'localhost'
 TEST_PORT = '8080'
 LANUCH_HOST = '0.0.0.0'
 LANUCH_PORT = '80'
 # Redirect url to be changed if instance is to be relauched
 REDIRECT_URI = '0.0.0.0:80/redirect'
-REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke'
 
 token = None
 
@@ -56,7 +46,6 @@ def index():
     # Use get method to obtain user searched keywords
     keywords = request.query.get('keywords')
     page = request.query.get('page')
-
     if page is None and (keywords is None or keywords is ""):
         ss.pop('query_string',None)
         ss.pop('keywords',None)
@@ -72,13 +61,9 @@ def index():
         for word in splwords:
             corrected = spell(word)
             if corrected != word:
-                print corrected
                 correction = True
             correctedwords.append(corrected)
-
-        print correctedwords
         correctedKeywords = ' '.join(correctedwords)
-        print correctedKeywords
         # acquire keyword history
         user_cookie = ss[ss_user] if ss_user in ss else kw_his.searchKW()
 
@@ -93,7 +78,6 @@ def index():
         # Returns a list of tuple sorted by page ranks
         # tuple = ( url, title )
         urls = db.findRelatedPageRank(splwords[0])
-
         # if not urls:
         #     redirect("error_page.tpl")
 
@@ -128,24 +112,24 @@ def index():
 
 
 # google login
-@route('/login')
-def google_login():
+# @route('/login')
+# def google_login():
 
-    ss = request.environ.get('beaker.session')
+#     ss = request.environ.get('beaker.session')
 
-    if ss.get('user', None) is None:
-        # create flow from json and stores client id, client secret and other parameter
-        flow = flow_from_clientsecrets(
-                'client_secrets.json',
-                scope='https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email',
-                redirect_uri= REDIRECT_URI)
-        # generate authorization server URI
-        uri = flow.step1_get_authorize_url()
-        # redirect to google sign in prompt
-        redirect(str(uri))
-    else:
-        # already sign in
-        redirect('/')
+#     if ss.get('user', None) is None:
+#         # create flow from json and stores client id, client secret and other parameter
+#         flow = flow_from_clientsecrets(
+#                 'client_secrets.json',
+#                 scope='https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email',
+#                 redirect_uri= REDIRECT_URI)
+#         # generate authorization server URI
+#         uri = flow.step1_get_authorize_url()
+#         # redirect to google sign in prompt
+#         redirect(str(uri))
+#     else:
+#         # already sign in
+#         redirect('/')
 
 
 # redirect page
