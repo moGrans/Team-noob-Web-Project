@@ -2,20 +2,24 @@
 @keyframes slideDown {
     0% {
         transform: translateY(-10%);
+        opacity: 0.5;
     }
 
     100% {
         transform: translateY(0%);
+        opacity: 1;
     }
 }
 
 @keyframes slideUp {
     0% {
         transform: translateY(4%);
+        opacity: 0.5;
     }
 
     100% {
         transform: translateY(0%);
+        opacity: 1;
     }
 }
 
@@ -148,22 +152,29 @@
 
 @media screen and (orientation: landscape) {
     #logo {
-        margin: 300px auto 0px;
-        line-height: 0;
-        width: 600px;
-        border: none;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      line-height: 0;
+      max-width: 600px;
+      width: 70%;
+      display: inline-block;
+      position: absolute;
+      border: none;
+      margin: auto auto 0 auto;
     }
 
     .logobox {
-        text-align: center;
-        height: 420px;
+      text-align: center;
+      height: 40%;
+      position: relative;
     }
 
     #logo:hover {
-        animation-name: shake;
-        animation-duration: 100ms;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
+      animation-name: shake;
+      animation-duration: 100ms;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
     }
 
     .main {
