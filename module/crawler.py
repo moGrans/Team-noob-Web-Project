@@ -20,9 +20,9 @@
 
 import urllib2
 import urlparse
-from BeautifulSoup import *
 from collections import defaultdict
 import re
+from BeautifulSoup import *
 from Database import database
 import pagerank
 
@@ -52,6 +52,7 @@ class crawler(object):
         self._word_id_cache = {}
         self._page_ranks = {}
         self._link_cache = {}
+        self.seen = set()
 
         # functions to call when entering and exiting specific tags
         self._enter = defaultdict(lambda *a, **ka: self._visit_ignore)
@@ -71,15 +72,27 @@ class crawler(object):
 
         # word lexicon
         # word_id -> corresponding string
-        self._lexicon = defaultdict(int)
+        self._lexicon = defaultdict(str)
 
         # document index
         # doc_id -> corresponding url
-        self._doc_index = defaultdict(int)
+        self._doc_index = defaultdict(str)
 
         # document lexicon
         # doc_id -> document title
         self._doc_title = dict()
+
+        # word appearance
+        # word_id -> { [doc_id:[index]] }
+        self._word_appearance = defaultdict(dict)
+
+        # document content
+        # doc_id -> { word_id, in order they appear in text }
+        self._doc_content = defaultdict(list)
+
+        # Crawled document record
+        # doc_id -> if the document has been crawled
+        self._doc_id_crawled = defaultdict(bool)
         ##### End of newly added variables
 
         # add a link to our graph, and indexing info to the related page
@@ -144,6 +157,9 @@ class crawler(object):
         self._font_size = 0
         self._curr_words = None
 
+        # keep track of advanced info that unique to each document
+        self._curr_index = 0
+        
         # get all urls into the queue
         try:
             with open(url_file, 'r') as f:
@@ -159,8 +175,7 @@ class crawler(object):
 
                 # Append each url into url queue
                 for line in self.urls[1:]:
-                    if db_conn.checkURL(line):
-                        self._url_queue.append((self._fix_url(line.strip(), ""), 0))
+                    self._url_queue.append((self._fix_url(line.strip(), ""), 0))
         except IOError:
             pass
 
@@ -183,16 +198,22 @@ class crawler(object):
     def word_id(self, word):
         """Get the word id of some specific word."""
         if word in self._word_id_cache:
-            return self._word_id_cache[word]
+            word_id = self._word_id_cache[word]
+        else:
+            word_id = self._mock_insert_word(word)
+            self._lexicon[word_id] = word
+            self._word_id_cache[word] = word_id
 
-        # TODO: 1) add the word to the lexicon, if that fails, then the
-        #          word is in the lexicon
-        #       2) query the lexicon for the id assigned to this word,
-        #          store it in the word id cache, and return the id.
+        # Add information of current word to both _doc_content and _word_appearance
+        self._doc_content[self._curr_doc_id].append(word_id)
 
-        word_id = self._mock_insert_word(word)
-        self._lexicon[word_id] = word
-        self._word_id_cache[word] = word_id
+        if self._word_appearance[word_id].has_key(self._curr_doc_id):
+            self._word_appearance[word_id][self._curr_doc_id].append(self._curr_index)
+        else:
+            self._word_appearance[word_id][self._curr_doc_id] = [self._curr_index]
+
+        self._curr_index += 1
+
         return word_id
 
     def document_id(self, url):
@@ -238,7 +259,18 @@ class crawler(object):
         self._doc_title[self._curr_doc_id] = title_text
 
         # TODO update document title for document id self._curr_doc_id
+    # def _visit_p(self, elem):
+    #     """Called when visiting <p> tags. Basically, strip out only text in inside
+    #     the <p> tag, then process each word relating to its index and store in cache"""
+    #
+    #     only_text = elem.text
+    #
+    #     words_in_p = WORD_SEPARATORS.split(elem.string.lower())
+    #
+    #     for word in words_in_p:
+    #         word = word.strip()
 
+            
     def _visit_a(self, elem):
         """Called when visiting <a> tags."""
 
@@ -249,10 +281,9 @@ class crawler(object):
         #      "alt="+repr(attr(elem,"alt")), \
         #      "text="+repr(self._text_of(elem))
 
-        # Check cloud whether the url has been visited
-        if self._database.checkURL(dest_url):
-            # add the just found URL to the url queue
-            self._url_queue.append((dest_url, self._curr_depth))
+
+        # add the just found URL to the url queue
+        self._url_queue.append((dest_url, self._curr_depth))
 
         # add a link entry into the database from the current document to the
         # other document
@@ -289,7 +320,7 @@ class crawler(object):
             self._curr_words.append((self.word_id(word), self._font_size))
 
             # Newly added line, for the testing of inverted index
-            self._inverted_index[self.word_id(word)].add(self._curr_doc_id)
+            self._inverted_index[self._word_id_cache[word]].add(self._curr_doc_id)
 
     def _text_of(self, elem):
         """Get the text inside some element without any tags."""
@@ -351,7 +382,9 @@ class crawler(object):
 
     def crawl(self, depth=2, timeout=3):
         """Crawl the web!"""
-        seen = set()
+        self.cache_reload()
+
+        seen = self.urlseen_reload()
 
         while len(self._url_queue):
 
@@ -361,15 +394,18 @@ class crawler(object):
             if depth_ > depth:
                 continue
 
+            # Reset in document word index
+            self._curr_index = 0
             doc_id = self.document_id(url)
 
             # we've already seen this document
-            if doc_id in seen:
+            if doc_id in self.seen:
                 continue
 
-            seen.add(doc_id)  # mark this document as haven't been visited
+            self.seen.add(doc_id)  # mark this document as haven't been visited
 
             socket = None
+
             try:
                 socket = urllib2.urlopen(url, timeout=timeout)
                 soup = BeautifulSoup(socket.read())
@@ -424,7 +460,16 @@ class crawler(object):
     def rank_page(self):
         self._page_ranks = pagerank.page_rank(self._link_cache.keys())
 
-        #TODO: store page_ranks in db
+    def cache_reload(self):
+        for data in self._database.lexiconDB.find({}):
+            self._word_id_cache[data['word']] = data['word_id']
+
+        for data in self._database.docIndexDB.find({}):
+            self._doc_id_cache[data['url']] = data['doc_id']
+
+    def urlseen_reload(self):
+        for key, value in self._doc_id_cache.iteritems():
+            self.seen.add(key)
 
 
 if __name__ == "__main__":

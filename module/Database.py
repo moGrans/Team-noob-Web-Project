@@ -1,14 +1,18 @@
 import datetime
 import operator
 import pymongo
-import pprint
+import re
+from SpellingCheck import autocorrect
+from trie import Trie
 
-CONNECTION_STR = \
-    "mongodb://Gransy:dfvGhUj068c9YqiA\
-@cluster0-shard-00-00-chyjq.mongodb.net:27017,\
-cluster0-shard-00-01-chyjq.mongodb.net:27017,\
-cluster0-shard-00-02-chyjq.mongodb.net:27017/\
-test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+# CONNECTION_STR = \
+#     "mongodb://Gransy:dfvGhUj068c9YqiA\
+# @cluster0-shard-00-00-chyjq.mongodb.net:27017,\
+# cluster0-shard-00-01-chyjq.mongodb.net:27017,\
+# cluster0-shard-00-02-chyjq.mongodb.net:27017/\
+# test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+
+CONNECTION_STR = "mongodb://localhost"
 
 class database():
 
@@ -20,14 +24,22 @@ class database():
         except Exception as error:
             assert False, error
 
-        self.lexiconDB = self.client.lexicon.Posts
-        self.docIndexDB = self.client.document_index.Posts
-        self.invertedIndexDB = self.client.inverted_index.Posts
-        self.reInvertedIndexDB = self.client.resolved_inverted_index.Posts
+        self.lexiconDB = self.client.project.lexicon
+        self.docIndexDB = self.client.project.document_index
+        self.invertedIndexDB = self.client.project.inverted_index
+        self.reInvertedIndexDB = self.client.project.resolved_inverted_index
 
-        self.visitedUrlDB = self.client.visited_url.Posts
+        self.visitedUrlDB = self.client.project.visited_url
 
-        self.pageRankDB = self.client.page_rank.Posts
+        self.pageRankDB = self.client.project.page_rank
+
+        self.wordAppearanceDB = self.client.project.word_appearance
+
+        self.trie = Trie()
+
+        self.spellingChecker = None
+
+        WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
     def insertIntoLexicon(self, _lexicon):
         """ Insert current crawled lexicon into mongoDB. """
@@ -41,10 +53,9 @@ class database():
                             "word":word,
                             "word_id":word_id})
 
-        lexiconDB = self.client.lexicon.Posts
-        result = lexiconDB.insert_many(newPost)
+        result = self.lexiconDB.insert_many(newPost)
 
-    def insertIntoDocIndex(self, _doc_index, _doc_title, page_ranks):
+    def insertIntoDocIndex(self, _doc_index, _doc_title, page_ranks, _doc_content, seen):
         """ Insert current crawled doc index into mongodDB. """
         newPost = []
 
@@ -54,14 +65,47 @@ class database():
         # A lambda fuction for use of assigning doc title
         hasKey = lambda key,col: col[key] if col.has_key(key) else ''
         for docID, url in dict(_doc_index).iteritems():
-            if self.docIndexDB.find_one({'doc_id':docID}):
+            if docID not in seen:
                 continue
             newPost.append({'date':datetime.datetime.utcnow(),
                             'doc_id':docID,
                             'url':url,
                             'doc_title': hasKey(docID, _doc_title),
-                            'doc_score': page_ranks[docID]})
+                            'doc_score': page_ranks[docID],
+                            'doc_content': _doc_content[docID]})
+
         result = self.docIndexDB.insert_many(newPost)
+
+    def insertIntoWordAppearance(self, _lexicon, _word_appearance):
+
+        newPost = []
+
+        if len(_word_appearance) == 0:
+            return
+
+        for word_id, word in _lexicon.iteritems():
+            result = self.wordAppearanceDB.find_one({'word_id':word_id})
+
+            doc_id_collect = []
+            pos_collect = []
+
+            for doc_id, pos in (_word_appearance[word_id]).iteritems():
+                doc_id_collect.append(doc_id)
+                pos_collect.append(_word_appearance[word_id][doc_id])
+
+            if not result:
+                newPost.append({"word_id":word_id,
+                                "doc_id_collect":doc_id_collect,
+                                "pos_collect":pos_collect})
+            else:
+                doc_id_collect = result["doc_id_collect"].extend(doc_id_collect)
+                pos_collect = result["pos_collect"].extend(pos_collect)
+
+                self.wordAppearanceDB.find_one_and_update({'word_id':word_id},
+                                                          {'$set':{'doc_id_collect':doc_id_collect}},
+                                                          {'$set':{'pos_collect':pos_collect}})
+
+        self.wordAppearanceDB.insert_many(newPost)
 
     def insertIntoInvertedIndex(self, _inverted_index):
         """ Insert current crawled inverted index into monogoDB. """
@@ -74,7 +118,7 @@ class database():
             result = self.invertedIndexDB.find_one({'word_id':wordID})
             if not result:
                 newPost.append({"word_id":wordID,
-                                "doc_ids":list(docIDs)} )
+                                "doc_ids":list(docIDs)})
             else:
                 # Merging existing doc ids with newly crawled ids
                 temp = result['doc_ids'].extend(list(docIDs))
@@ -83,7 +127,7 @@ class database():
                 self.invertedIndexDB.find_one_and_update({'word_id':wordID},
                                                          {'$set':{'doc_ids':temp}})
 
-        result = self.invertedIndexDB.insert_many(newPost)
+        self.invertedIndexDB.insert_many(newPost)
 
     def insertIntoReInvertedIndex(self, _resolved_inverted_index):
         """ Insert resolved inverted index into monogoDB. """
@@ -106,23 +150,6 @@ class database():
                                                            {'$set':{'urls':temp}})
 
         result = self.reInvertedIndexDB.insert_many(newPost)
-
-    # def insertIntoPageRank(self, word, sortedPages):
-    #     """
-    #     either insert or update ranked pages corresponding to
-    #     a word on data base
-
-    #     :word: str
-    #     :sortedPages: list(int)
-    #     """
-    #     newPost = []
-    #     if self.pageRankDB.find({'word':word}):
-    #         self.pageRankDB.find_one_and_replace({'word':word},
-    #                                             {'word':word,
-    #                                             'sortedPages':sortedPages})
-    #     else:
-    #         self.pageRankDB.insert_one({'word':word,
-    #                                     'sortedPages':sortedPages})
 
     def checkURL(self, url):
         """
@@ -259,3 +286,70 @@ class database():
         sortedURL.reverse()
 
         return sortedURL
+
+    def initializeTrieTree(self):
+
+        words = []
+
+        for eachLexicon in self.lexiconDB.find({}):
+            self.trie.insert(eachLexicon['word'])
+            words.append(eachLexicon['word'])
+
+        self.spellingChecker = autocorrect(words)
+
+    def searchSuggestion(self, userInput):
+        """
+        Give back search suggestion depending on current input
+        :param userInput: str
+        :return: str
+                 None if no result can be found
+        """
+        words = self.WORD_SEPARATORS.split(userInput.lower())
+        suggestions = []
+
+        if len(words) == 1:
+            # User is inputting the first word
+            suggestions = self.trie.get_start(words[0])
+
+            corrected = None
+
+            if len(suggestions) == 0:
+                # if don't get nothing, try auto correct
+                corrected = self.spellingChecker.correction(words[0])
+
+            # Try another time after finished correction
+            suggestions = self.trie.get_start(corrected)
+            if len(suggestions) == 0:
+                return None
+
+
+        elif len(words) > 1:
+
+            temp_pos_clt = []
+            docCandidate = []
+
+            for wordIndex in range(words):
+                result = self.wordAppearanceDB.find_one({'word':words[wordIndex]})
+                temp_pos_clt.append(result['pos_collect'])
+                docCandidate.append(result['doc_id_collect'])
+
+
+
+    def getDescription(self, word_ids, doc_id, nWords):
+        """
+        Depending on the given word id and doc id, return a string has
+        a length specified by nWords
+        :param word_ids: int
+        :param doc_id: int
+        :param nWords: int
+        :param nWords: int
+        :return: str
+        """
+
+        # result = self.wordAppearanceDB.find_one({'word_id':word_id})
+        pass
+
+
+    def multi_word_search(self, list_of_words):
+        pass
+

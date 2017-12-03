@@ -15,5 +15,11 @@ data/*
 *.pem
 *.pyproj
 *.suo
+<<<<<<< HEAD
 settings.json
 *.sln
+=======
+*.sln
+tags
+settings.json
+>>>>>>> e4d2bb4cf20555294c63fbdb05733633377caa89

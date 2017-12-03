@@ -336,8 +336,6 @@
       </div>
     </div>
     % end
-
-  %end
   </body>
 
 </html>

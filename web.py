@@ -19,8 +19,12 @@ from module import kw_his
 CLIENT_ID = '511198361373-6lm1dk6kii30500e6hli6ktnas214etf.apps.googleusercontent.com'
 CLIENT_SECRET = 'P_JlHj5B1t8Fgc9TdANWDThL'
 SCOPE = 'https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/userinfo.email'
+TEST_HOST = 'localhost'
+TEST_PORT = '8080'
+LANUCH_HOST = '0.0.0.0'
+LANUCH_PORT = '80'
 # Redirect url to be changed if instance is to be relauched
-REDIRECT_URI = 'localhost:8080/redirect'
+REDIRECT_URI = '0.0.0.0:80/redirect'
 REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke'
 
 token = None
@@ -57,7 +61,7 @@ def index():
         ss.pop('query_string',None)
         ss.pop('keywords',None)
         # Home Page
-        return template("view/homepage", ss_user=ss_user, ss=ss)
+        return template("view/homepage.html", ss_user=ss_user, ss=ss)
     else:
         # Handle the form submission
         keywords = request.query.get('keywords')
@@ -103,12 +107,12 @@ def index():
         page = int(page)
 
         if urls is not None:
-            total_page = (len(urls) + 4)//5
+            total_page = (len(urls) + 9)//10
         else:
             total_page = 0
               
         # Return result page
-        return template("view/query_result", keywords=keywords,
+        return template("view/query_result.html", keywords=keywords,
                         this_search=this_search,
                         ss=ss,
                         ss_user=ss_user,
@@ -217,12 +221,14 @@ def server_static(filepath):
 # error page
 @error(404)
 def error404(error):
-    return template("view/error_page")
+    return template("view/error_page.html")
 
 
 # run the created web page
 if __name__ == '__main__':
+    print 'Changing directory'
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     print 'Initializing database'
     db = database()
     print 'Booting up web service'
-    run(app=wsgi_app, host='localhost',port=8080, reloader=True)
+    run(app=wsgi_app, host=LANUCH_HOST,port=LANUCH_PORT, reloader=True)

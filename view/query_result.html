@@ -5,92 +5,167 @@
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href="/static/css/query_result.css">
   </head>
+
+  <script>
+    window.autoComp = function() {
+			var hasValue = document.getElementById('inputtable').value;
+			if (!!hasValue) {
+				document.getElementById('acomp').style.display = 'block';
+			} else {
+				document.getElementById('acomp').style.display = 'none';
+			};
+		};
+
+    window.autoCompOut = function() {
+      document.getElementById('acomp').style.display = 'none';
+    }
+  </script>
+
   <body>
     <!-- top right search bar -->
-    <div class="sfbgx">
-      <div id = "searchform">
-        <!-- <table id = "searchhistory"> -->
-        <div class = "logo">
-          <a href = "/" title = "Go to homepage">
-            <img src = "/static/image/test_logo.png" width = 160></a>
+      <div class="box sfbgx">
+        <div class = "box logobox">
+            <a href = "/" title = "Go to homepage">
+              <img class = "logo" src = "/static/image/test_logo.png">
+            </a>
         </div>
-        <div class = "searchbox">
-          <form method="get" action="/">
-              <input type='text' name='keywords' value={{keywords}}>
-              <input type='submit' value='Search'>
+        <!-- input filed for search -->
+        <div class = "box main">
+          <form method="get" action="/" class="sform">
+            <div class = "searchbox">
+                <input type='text' name='keywords' id="inputtable" value='{{keywords}}' autocomplete='off' id='inputtable' onfocus="autoComp()" onfocusout="autoCompOut()">
+                <input type='submit' value='Search'>
+            </div>
+            <div id = "acomp">
+              <ul class = "suggs">
+                <li class = "entries" role="presentation"><a href="/f">f</a></li>
+                <li class = "entries" role="presentation"><a href="/fu">fu</a></li>
+                <li class = "entries" role="presentation"><a href="/fuc">fuc</a></li>
+                <li class = "entries" role="presentation"><a href="/fuck">fuck</a></li>
+              </ul>
+            </div>
           </form>
+        </div>
       </div>
-    </div>
-  </div>
     <!-- RESULT URL -->
-    
-    <div class = "mw">
-      <!-- spell correction -->
-      % if correction is True:
-      <div class = "spell_co">
-        <span class = "spell">
-          Did you mean: <a href="/{{ss['corrected_string']}}">{{correctedKeywords}} </a>
-        </span>
-      </div>
-      % end
+    <div class = "container">
+        <!-- spell correction -->
+        % if correction is True:
+        <div class = "box card spell_co">
+          <span class = "spell">
+            Did you mean: <a href="/{{ss['corrected_string']}}">{{correctedKeywords}} </a>
+          </span>
+        </div>
+        % end
 
-      % if url is None:
-      <div class = "result_not_found">
-        <img src = "/static/image/result_not_found.png" width= 600>
-      </div>
-      % end
-      % if url is not None:
-      <div class = "rcnt">
-        %for (url, title) in url[5*(page-1):5*page]:
-        <div class = "g">
-          <div class = "result">
-                <h3 class = "r">
-                  <a href= {{url}}>
-                     {{title}}
-                  </a>
-                </h3>
+        % if url is None:
+        <div class = "box card result_not_found">
+          <img src = "/static/image/result_not_found.png" width = 100% max-width = 600>
+        </div>
+        % end
+        % if url is not None:
+          %for (url, title) in url[10*(page-1):10*page]:
+          <div class = "box card g">
+              <div class = "result">
+                    <h3 class = "r">
+                      <a href= {{url}}>
+                        {{title}}
+                      </a>
+                    </h3>
+              </div>
+              <div class="refdiv">
+                <cite  class="ref">{{url}}</cite>
+              </div>   
+            <hr>
+            <div id = "url_content">
+              <script type="text/javascript"> 
+              document.write("web content...... need from back end ......");
+
+              </script>
+            </div>
           </div>
-          <div style="white-space:nowrap">
-            <cite  class="ref">{{url}}</cite>
-          </div>         
-          <div id = "url_content">
-            <script type="text/javascript"> 
-             document.write("web content...... need from back end ......");
+          %end
+        
+      
+      % end
 
-            </script>
+      <!-- page choice -->
+      <!-- if total number of pages is greater than 5, then show 5 page option -->
+        % if total_page > 1:
+        <div class = "box page_center" align="center">
+          <div class="pagination">
+            % if page > 2:
+              <a href="/{{ss['query_string']}}&page=1">❮❮</a>
+            % end
+            % if page > 1:
+            <a href="/{{ss['query_string']}}&page={{page-1}}">❮</a>
+            % end
+            
+            % if total_page <= 5:
+              % if page is 1:
+                <a class="active" href="#">{{page}}</a>
+                % for npage in range(2, total_page+1):
+                  <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                % end
+              % end
+              % if page is not 1:
+                % for npage in range(1, page):
+                  <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                %end
+                <a class="active" href="#">{{page}}</a>
+                % if page is not total_page:
+                  % for npage in range(page, total_page + 1):
+                    <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+                  % end
+                % end
+              % end
+            % end
+            % if total_page > 5:
+              % if total_page - 3 < page:
+                % for npage in range(1, 5 - (total_page - page) - 1):
+                  <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
+                % end
+              % end
+              % if page is not 1:
+                <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
+              % end
+              <a class="active" href="#">{{page}}</a>
+              % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
+                <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
+              % end
+            % end
+            % if page < total_page:
+              <a href="/{{ss['query_string']}}&page={{page+1}}">❯</a>
+            % end
+            % if page < total_page - 1:
+              <a href="/{{ss['query_string']}}&page={{total_page}}">❯❯</a>
+            % end
           </div>
         </div>
-        %end
-      </div>
-    </div>
-    % end
+        % end
 
-    <!-- page choice -->
-    <!-- if total number of pages is greater than 5, then show 5 page option -->
-    % if total_page > 1:
-    <div class = "page_center" align="center">
-      <div class="pagination">
-        <a href="/{{ss['query_string']}}&page=1">❮</a>
-        
-        % if total_page - 3 < page:
-          % for npage in range(1, 5 - (total_page - page) - 1):
-            <a href="/{{ss['query_string']}}&page={{page - (5 - (total_page - page)) + npage}}">{{page - (5 - (total_page - page)) + npage}}</a>
-          % end
-        % end
-        % if page is not 1:
-          <a href="/{{ss['query_string']}}&page={{page-1}}">{{page-1}}</a>
-        % end
-        <a class="active" href="#">{{page}}</a>
-        % for npage in range(page+1,page+min(5 if page is 1 else 4,total_page - page + 1)):
-          <a href="/{{ss['query_string']}}&page={{npage}}">{{npage}}</a>
-        % end
-        % if page is not total_page:
-          <a href="/{{ss['query_string']}}&page={{total_page}}">❯</a>
-        % end
-      </div>
+      % if total_page > 1:
+        <div class = "box card pagecenter">
+          <div class = "aldiv">
+            % if page > 1:
+              <a class = "aleft" href="/{{ss['query_string']}}&page={{page - 1}}">❮ </a>
+            % end
+            % if page <= 1:
+              <span> </span>
+            % end
+          </div>
+          <div class="pagenum"><span>Page {{page}}</span></div>
+          <div class = "rldiv">
+            % if page is not total_page:
+              <a class = "aright" href="/{{ss['query_string']}}&page={{page + 1}}"> ❯</a>
+            % end
+            % if page is total_page:
+             <span> </span>
+            % end
+          </div>
+        </div> 
+      % end
     </div>
-    % end
-
   </body>
 
 </html>
