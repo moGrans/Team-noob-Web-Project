@@ -367,7 +367,67 @@ class database():
 
 
     def multi_word_search(self, list_of_words):
-        pass
+        
+        has_none_result = False
+
+        doc_id_candidate = set()
+
+        word_ids = set()
+
+        word_id = list_of_words[0]
+
+        # First fill the candidate with the first word
+        result = self.invertedIndexDB.find_one({'word_id':self.findWord(word_id)})
+
+        word_ids.add(word_id)
+        
+        if result == None:
+            return None
+
+        doc_id_candidate.update(result['doc_ids'])
+
+        for word in list_of_words:
+            
+            word_id = self.findWord(word)
+
+            result = self.invertedIndexDB.find_one({'word_id':})
+
+            if result == None:
+                has_none_result = True
+                continue
+            
+            word_ids.add(word_id)
+
+            doc_id_candidate.intersection_update(result['doc_ids'])
+        
+        suggestions_word_pair = []
+        
+        comb_to_doc_id_LU = {}
+
+        for doc_id in list(doc_id_candidate):
+            L2_word_appearance_candidate = []
+
+            word_appearance_temp = []
+
+            for word_id in list(word_ids):
+                result = self.wordAppearanceDB.find_one({'word_id'})
+                pos_collect = result['pos_collect']
+                pos_collect_doc = pos_collect[result['doc_id_collect'].index(doc_id)]
+                word_appearance_temp.append(pos_collect_doc)
+
+            indoc_appearance_sorted = sorted(product(*word_appearance_temp), key=two_pass_variance)
+
+            suggestions_word_pair.append(indoc_appearance_sorted[0])
+
+            comb_to_doc_id_LU[indoc_appearance_sorted[0]] = doc_id
+        
+        suggestions_doc_id = []
+
+        for eachSuggest in suggestion_word_pair:
+            suggestions_doc_id.append(comb_to_doc_id_LU[eachSuggest])
+        
+        return (suggestions_word_pair, suggestions_doc_id)
+
 
 def two_pass_variance(data):
     n = sum1 = sum2 = 0
