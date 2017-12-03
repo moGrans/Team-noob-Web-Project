@@ -33,6 +33,11 @@ function  getHistory(){
     var keyWords = $.cookie('keyWord');  
     if (keyWords) { 
         $("#acomp").show();
+        $("#inputtable").on('keyup', function (e) {
+            if (e.keyCode == 13) {
+                $("#acomp").hide();
+            }
+        });
         var keys =  keyWords.split(",");  
         var length = keys.length;  
         if (length > 0) {  
@@ -89,3 +94,9 @@ window.addEventListener('click', function(e){
                 $("#acomp").hide();
     }
   });
+
+$("#inputtable").on('keyup', function (e) {
+    if (e.keyCode == 13) {
+        $("#acomp").hide();
+    }
+});
