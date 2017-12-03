@@ -16,3 +16,4 @@ data/*
 *.pyproj
 *.suo
 settings.json
+*.sln
