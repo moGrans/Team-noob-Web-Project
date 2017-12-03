@@ -7,6 +7,16 @@ body {
   background: #f3f3f3;
 }
 
+.entries a:link{
+  color: #000000;
+  text-decoration: none;
+}
+
+.entries a:visited{
+  color: #000000;
+  text-decoration: none;
+}
+
 hr {
   display: block;
   border: 0;
@@ -60,6 +70,18 @@ cite {
   width: 100%;
 }
 
+@keyframes sugges {
+  0% {
+    transform: translateY(-3%);
+    opacity: 0;
+  }
+
+  100% {
+    transfrom: translateY(0%);
+    opacity: 1;
+  }
+}
+
 @keyframes slideUp {
   0% {
     transform: translateY(2%);
@@ -80,7 +102,11 @@ cite {
   }
 }
 
-@media screen and (orientation: landscape) {
+#acomp {
+  display: none;
+}
+
+@media screen and (min-width:815px) {
   .pagecenter {
     display: none;
   }
@@ -94,7 +120,7 @@ cite {
     top: 0;
     left: 0;
     width:100%;
-    overflow: hidden;
+    height: 69px;
     background: #fff;
     -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
     box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
@@ -133,9 +159,52 @@ cite {
     word-wrap: break-word;
   }
 
+  #acomp {
+    z-index: 100;
+    display: none;
+    width: 605px;
+    background-color: #ffffff;
+    cursor: default;
+    position: absolute;
+    top: 52px;
+    left: 171px;
+    width: 755px;
+    border-radius: 3px;
+    height: auto;
+    box-sizing: border-box;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+    box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+  }
+
+  .suggs {
+    background-color: #ffffff;
+    font-family: arial,sans-serif;
+    margin: 5px 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .entries {
+    cursor: pointer;
+    text-align: left;
+    padding: 3px 8px;
+    background-color: #ffffff;
+    transition: background-color 0.2s;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    -o-transition: background-color 0.2s;
+  }
+
+  .entries:hover {
+    background-color: rgb(238, 238, 238);
+  }
+
   input[type=text] {
     position: relative;
     top: 8px;
+    border-radius: 3px;
     background-color: #f7f8fa;
     min-width: 500px;
     /* width: 40%; */
@@ -144,7 +213,6 @@ cite {
     margin-right: 6px;
     display: inline-block;
     border: 1px solid #ccc;
-    border-radius: 4px;
     box-sizing: border-box;
     font-size: 15px;
     color: #7e7e7eb4;
@@ -320,7 +388,7 @@ cite {
   }
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (max-width:815px) {
   .sfbgx {
     height: 120px;
     text-align: center;
@@ -344,6 +412,43 @@ cite {
       max-width: 750px;
       position: relative;
       right: 5px;
+  }
+
+  #acomp {
+    z-index: 100;
+    display: none;
+    background-color: #ffffff;
+    cursor: default;
+    position: absolute;
+    top: 42px;
+    left: 2px;
+    width: 100%;
+    height: auto;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    margin: 0;
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+    box-shadow: 0 1px 3px 0 rgba(0,34,77,.1);
+    animation: 0.3s ease-out 0s 1 sugges;
+  }
+
+  .suggs {
+    background-color: #ffffff;
+    font-family: arial,sans-serif;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .entries {
+    text-align: left;
+    padding: 12px 8px;
+    border-bottom: 1px solid #d9d9d9;
+    background-color: #ffffff;
+    transition: background-color 0.2s;
+    -webkit-transition: background-color 0.2s;
+    -moz-transition: background-color 0.2s;
+    -o-transition: background-color 0.2s;
   }
 
   input[type=text] {

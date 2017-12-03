@@ -5,6 +5,22 @@
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="stylesheet" href="/static/css/query_result.css">
   </head>
+
+  <script>
+    window.autoComp = function() {
+			var hasValue = document.getElementById('inputtable').value;
+			if (!!hasValue) {
+				document.getElementById('acomp').style.display = 'block';
+			} else {
+				document.getElementById('acomp').style.display = 'none';
+			};
+		};
+
+    window.autoCompOut = function() {
+      document.getElementById('acomp').style.display = 'none';
+    }
+  </script>
+
   <body>
     <!-- top right search bar -->
       <div class="box sfbgx">
@@ -17,8 +33,16 @@
         <div class = "box main">
           <form method="get" action="/" class="sform">
             <div class = "searchbox">
-                <input type='text' name='keywords' value='{{keywords}}'>
+                <input type='text' name='keywords' id="inputtable" value='{{keywords}}' autocomplete='off' id='inputtable' onfocus="autoComp()" onfocusout="autoCompOut()">
                 <input type='submit' value='Search'>
+            </div>
+            <div id = "acomp">
+              <ul class = "suggs">
+                <li class = "entries" role="presentation"><a href="/f">f</a></li>
+                <li class = "entries" role="presentation"><a href="/fu">fu</a></li>
+                <li class = "entries" role="presentation"><a href="/fuc">fuc</a></li>
+                <li class = "entries" role="presentation"><a href="/fuck">fuck</a></li>
+              </ul>
             </div>
           </form>
         </div>
