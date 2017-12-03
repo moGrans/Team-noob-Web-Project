@@ -5,14 +5,16 @@ import re
 from SpellingCheck import autocorrect
 from trie import Trie
 
-# CONNECTION_STR = \
-#     "mongodb://Gransy:dfvGhUj068c9YqiA\
-# @cluster0-shard-00-00-chyjq.mongodb.net:27017,\
-# cluster0-shard-00-01-chyjq.mongodb.net:27017,\
-# cluster0-shard-00-02-chyjq.mongodb.net:27017/\
-# test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+from itertools import product
 
-CONNECTION_STR = "mongodb://localhost"
+CONNECTION_STR = \
+    "mongodb://Gransy:dfvGhUj068c9YqiA\
+@cluster0-shard-00-00-chyjq.mongodb.net:27017,\
+cluster0-shard-00-01-chyjq.mongodb.net:27017,\
+cluster0-shard-00-02-chyjq.mongodb.net:27017/\
+test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+
+# CONNECTION_STR = "mongodb://localhost"
 
 class database():
 
@@ -326,13 +328,27 @@ class database():
         elif len(words) > 1:
 
             temp_pos_clt = []
-            docCandidate = []
+            docCandidate = set()
+            words_id = []
 
-            for wordIndex in range(words):
-                result = self.wordAppearanceDB.find_one({'word':words[wordIndex]})
-                temp_pos_clt.append(result['pos_collect'])
-                docCandidate.append(result['doc_id_collect'])
+            result = self.wordAppearanceDB.find_one({'word': words[words[0]]})
+            docCandidate.update(result['doc_id_collect'])
+            words_id.append(result['word_id'])
 
+            for wordIndex in range(1,len(words)):
+                result = self.wordAppearanceDB.find_one({'word': words[wordIndex]})
+
+                docCandidate.intersection_update(result['doc_id_collect'])
+
+                if len(docCandidate) == 0:
+                    return None
+
+                words_id.append(result['word_id'])
+
+        in_doc_index_candidate = []
+
+        # After gained the in doc index of each word, sort by the variance
+        suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
 
 
     def getDescription(self, word_ids, doc_id, nWords):
@@ -353,3 +369,17 @@ class database():
     def multi_word_search(self, list_of_words):
         pass
 
+def two_pass_variance(data):
+    n = sum1 = sum2 = 0
+
+    for x in data:
+        n += 1
+        sum1 += x
+
+    mean = sum1 / n
+
+    for x in data:
+        sum2 += (x - mean)*(x - mean)
+
+    variance = sum2 / (n - 1)
+    return variance

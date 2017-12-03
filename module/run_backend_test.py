@@ -10,7 +10,7 @@ if __name__ == "__main__":
     db = database()
 
     bot = crawler(db, 'urls.txt')
-    bot.crawl(depth=3)
+    bot.crawl(depth=2)
     bot.rank_page()
 
     print "Inserting into lexicon..."
