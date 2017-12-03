@@ -59,10 +59,15 @@ function  getHistory(){
                     i--;
                 }
             }
+            if (htmlString == '') {
+                $("#acomp").hide();
+                return;
+            }
             htmlString += '<li class = "entries clearhis" role="presentation" onclick="delHistory()">Clear History</li>';
             $("#suggs").html(htmlString);
         };
     } ;
+
 }  
 
 window.autoComp = function() {
