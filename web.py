@@ -208,9 +208,9 @@ def log_out():
 def server_static(filepath):
     return static_file(filepath, root='./static')
 
-@route('/static/<filepath:path>')
+@route('/view/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root='./static')
+    return static_file(filepath, root='./view')
 
 # # test error return page
 # @route('/404')
