@@ -364,6 +364,7 @@ class database():
         :return: list(str)
         """
         descriptions = []
+        URLs = []
 
         for index in range(len(suggestions_word_pair)):
 
@@ -386,8 +387,9 @@ class database():
             description += '...'
 
             descriptions.append(description)
+            URLs.append(result['url'])
 
-        return descriptions
+        return descriptions, URLs
 
     def multi_word_search(self, list_of_words):
         

@@ -9,4 +9,8 @@ if __name__ == "__main__":
     print s_w
     print s_d
 
-    print db.getDescription(s_w, s_d)
+    des, urls = db.getDescription(s_w, s_d)
+
+    for i in range(len(des)):
+        print urls[i]
+        print des[i]
