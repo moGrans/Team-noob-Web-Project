@@ -58,6 +58,7 @@ def index():
 
         correction = False
         correctedwords = []
+
         for word in splwords:
             corrected = db.spellingChecker.correction(word)
             print corrected
@@ -78,9 +79,11 @@ def index():
 
         # Returns a list of tuple sorted by page ranks
         # tuple = ( url, title )
-        urls = db.findRelatedPageRank(splwords[0])
-        # if not urls:
-        #     redirect("error_page.tpl")
+        if len(splwords) == 1:
+            urls = db.findRelatedPageRank(splwords[0])
+        else:
+            suggestions_word_list, suggestions_doc_id = db.multi_word_search(splwords)
+            urls = db.getDescription(suggestions_word_list, suggestions_doc_id, 40)
 
         if page is None or page is "":
             page = 1

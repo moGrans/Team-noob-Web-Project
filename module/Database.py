@@ -264,11 +264,10 @@ class database():
         Find the ranked list of urls related to a word
         If such word not found, None returned
         :word: str
-        :return: list(str)
+        :return: list( (str,str) )
                  None       # if not found
         """
         wordRelated = self.lexiconDB.find_one({'word': word})
-
 
         if not wordRelated:
             return None
