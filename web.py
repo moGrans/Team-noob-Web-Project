@@ -2,7 +2,7 @@ import bottle
 from bottle import route, Bottle, template, request, run, get, post, static_file, app, redirect, error
 from beaker.middleware import SessionMiddleware
 from module.Database import database
-from autocorrect import spell
+from module import SpellingCheck
 import httplib2
 import requests
 import os
@@ -59,7 +59,8 @@ def index():
         correction = False
         correctedwords = []
         for word in splwords:
-            corrected = spell(word)
+            corrected = db.spellingChecker.correction(word)
+            print corrected
             if corrected != word:
                 correction = True
             correctedwords.append(corrected)
@@ -140,12 +141,12 @@ def redirect_page():
     if code is "":
         redirect('/')
     # exchange one time code for access token by submitting http request
-    flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
-                               scope=SCOPE,
-                               client_secret=CLIENT_SECRET,
-                               redirect_uri=REDIRECT_URI)
-    # exchanges an authorization code for a Credentials
-    credentials = flow.step2_exchange(code)
+    # flow = OAuth2WebServerFlow(client_id=CLIENT_ID,
+    #                            scope=SCOPE,
+    #                            client_secret=CLIENT_SECRET,
+    #                            redirect_uri=REDIRECT_URI)
+    # # exchanges an authorization code for a Credentials
+    # credentials = flow.step2_exchange(code)
 
     # apply necessary credential headers to all requests made by an httplib2.Http instance
     http = httplib2.Http()
@@ -170,22 +171,22 @@ def redirect_page():
 
 
 # log out
-@route('/logout')
-def log_out():
-    ss = request.environ.get('beaker.session')
-    # remove user sign in session from beaker
-    ss.pop('user', None)
-    ss.pop('picture', None)
-    ss.save()
-    try:
-        response = requests.post(REVOKE_URL,
-                                 params={'token': token},
-                                 headers={'content-type': 'application/x-www-form-urlencoded'})
-    except:
-        raise HttpError
+# @route('/logout')
+# def log_out():
+#     ss = request.environ.get('beaker.session')
+#     # remove user sign in session from beaker
+#     ss.pop('user', None)
+#     ss.pop('picture', None)
+#     ss.save()
+#     try:
+#         response = requests.post(REVOKE_URL,
+#                                  params={'token': token},
+#                                  headers={'content-type': 'application/x-www-form-urlencoded'})
+#     except:
+#         raise HttpError
 
-    # redirect back to homepage
-    redirect('/')
+#     # redirect back to homepage
+#     redirect('/')
 
 # import static file for logos/images
 @route('/static/<filepath:path>')
@@ -214,5 +215,6 @@ if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     print 'Initializing database'
     db = database()
+    db.initializeTrieTree()
     print 'Booting up web service'
     run(app=wsgi_app, host=LANUCH_HOST,port=LANUCH_PORT, reloader=True)
