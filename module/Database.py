@@ -303,56 +303,56 @@ class database():
 
         self.spellingChecker = autocorrect(words)
 
-    def searchSuggestion(self, userInput):
-        """
-        Give back search suggestion depending on current input
-        :param userInput: str
-        :return: str
-                 None if no result can be found
-        """
-        words = self.WORD_SEPARATORS.split(userInput.lower())
-        suggestions = []
-
-        if len(words) == 1:
-            # User is inputting the first word
-            suggestions = self.trie.get_start(words[0])
-
-            corrected = None
-
-            if len(suggestions) == 0:
-                # if don't get nothing, try auto correct
-                corrected = self.spellingChecker.correction(words[0])
-
-            # Try another time after finished correction
-            suggestions = self.trie.get_start(corrected)
-            if len(suggestions) == 0:
-                return None
-
-
-        elif len(words) > 1:
-
-            temp_pos_clt = []
-            docCandidate = set()
-            words_id = []
-
-            result = self.wordAppearanceDB.find_one({'word': words[words[0]]})
-            docCandidate.update(result['doc_id_collect'])
-            words_id.append(result['word_id'])
-
-            for wordIndex in range(1,len(words)):
-                result = self.wordAppearanceDB.find_one({'word': words[wordIndex]})
-
-                docCandidate.intersection_update(result['doc_id_collect'])
-
-                if len(docCandidate) == 0:
-                    return None
-
-                words_id.append(result['word_id'])
-
-        in_doc_index_candidate = []
-
-        # After gained the in doc index of each word, sort by the variance
-        suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
+    # def searchSuggestion(self, userInput):
+    #     """
+    #     Give back search suggestion depending on current input
+    #     :param userInput: str
+    #     :return: str
+    #              None if no result can be found
+    #     """
+    #     words = self.WORD_SEPARATORS.split(userInput.lower())
+    #     suggestions = []
+    #
+    #     if len(words) == 1:
+    #         # User is inputting the first word
+    #         suggestions = self.trie.get_start(words[0])
+    #
+    #         corrected = None
+    #
+    #         if len(suggestions) == 0:
+    #             # if don't get nothing, try auto correct
+    #             corrected = self.spellingChecker.correction(words[0])
+    #
+    #         # Try another time after finished correction
+    #         suggestions = self.trie.get_start(corrected)
+    #         if len(suggestions) == 0:
+    #             return None
+    #
+    #
+    #     elif len(words) > 1:
+    #
+    #         temp_pos_clt = []
+    #         docCandidate = set()
+    #         words_id = []
+    #
+    #         result = self.wordAppearanceDB.find_one({'word': words[words[0]]})
+    #         docCandidate.update(result['doc_id_collect'])
+    #         words_id.append(result['word_id'])
+    #
+    #         for wordIndex in range(1,len(words)):
+    #             result = self.wordAppearanceDB.find_one({'word': words[wordIndex]})
+    #
+    #             docCandidate.intersection_update(result['doc_id_collect'])
+    #
+    #             if len(docCandidate) == 0:
+    #                 return None
+    #
+    #             words_id.append(result['word_id'])
+    #
+    #     in_doc_index_candidate = []
+    #
+    #     # After gained the in doc index of each word, sort by the variance
+    #     suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
 
     def getDescriptionForOneWord(self, word, URL):
 
@@ -368,7 +368,11 @@ class database():
 
         result_wordAppearance = self.wordAppearanceDB.find_one({'word_id':word_id})
 
-        word_id_index = result_wordAppearance['pos_collect'][doc_id][0]
+        wordAppearance_doc_id_index = result_wordAppearance['doc_id_collect']
+
+        doc_id_index = wordAppearance_doc_id_index.index(doc_id)
+
+        word_id_index = result_wordAppearance['pos_collect'][doc_id_index][0]
 
         end_index = word_id_index + 30
 
