@@ -351,23 +351,95 @@ class database():
         suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
 
 
-    def getDescription(self, word_ids, doc_id, nWords):
+    def getDescription(self, suggestions_word_pair, suggestions_doc_id, nWords=40):
         """
         Depending on the given word id and doc id, return a string has
         a length specified by nWords
-        :param word_ids: int
-        :param doc_id: int
+        :param word_ids: list(int)
+        :param doc_id: list(int)
         :param nWords: int
-        :param nWords: int
-        :return: str
+        :return: list(str)
         """
+        descriptions = []
 
-        # result = self.wordAppearanceDB.find_one({'word_id':word_id})
-        pass
+        for index in range(len(suggestions_word_pair)):
 
+            min_index = min(suggestions_word_pair[index])
+            max_index = min_index + nWords
+
+            result = self.docIndexDB.find_one({'doc_id':suggestions_doc_id[index]})
+
+            contentOrder = result['doc_content']
+
+            description = ''
+
+            for contentIndex in range(min_index, max_index + 1):
+
+                description += (self.lexiconDB.find_one({'word_id':contentOrder[contentIndex]}))['word'] + ' '
+
+            description += '...'
+
+            descriptions.append(description)
+
+        return descriptions
 
     def multi_word_search(self, list_of_words):
-        pass
+        
+        has_none_result = False
+
+        doc_id_candidate = set()
+
+        word_ids = set()
+
+        word_id = self.findWord(list_of_words[0])
+
+        # First fill the candidate with the first word
+        result = self.invertedIndexDB.find_one({'word_id':word_id})
+
+        word_ids.add(word_id)
+        
+        if result == None:
+            return None
+
+        doc_id_candidate.update(result['doc_ids'])
+
+        for word in list_of_words[1:]:
+            
+            word_id = self.findWord(word)
+
+            result = self.invertedIndexDB.find_one({'word_id':word_id})
+
+            if result == None:
+                has_none_result = True
+                continue
+            
+            word_ids.add(word_id)
+
+            doc_id_candidate.intersection_update(result['doc_ids'])
+        
+        suggestions_word_pair = []
+        
+        suggestions_doc_id = []
+
+        for doc_id in list(doc_id_candidate):
+            L2_word_appearance_candidate = []
+
+            word_appearance_temp = []
+
+            for word_id in list(word_ids):
+                result = self.wordAppearanceDB.find_one({'word_id':word_id})
+                pos_collect = result['pos_collect']
+                pos_collect_doc = pos_collect[result['doc_id_collect'].index(doc_id)]
+                word_appearance_temp.append(pos_collect_doc)
+
+            indoc_appearance_sorted = sorted(product(*word_appearance_temp), key=two_pass_variance)
+
+            suggestions_word_pair.append(indoc_appearance_sorted[0])
+
+            suggestions_doc_id.append(doc_id)
+        
+        return (suggestions_word_pair, suggestions_doc_id)
+
 
 def two_pass_variance(data):
     n = sum1 = sum2 = 0
