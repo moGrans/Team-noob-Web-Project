@@ -79,8 +79,11 @@ def index():
 
         # Returns a list of tuple sorted by page ranks
         # tuple = ( url, title )
+        print "hahaha"
+        print splwords
         if len(splwords) == 1:
             urls = db.findRelatedPageRank(splwords[0])
+            print urls
         else:
             suggestions_word_list, suggestions_doc_id = db.multi_word_search(splwords)
             urls = db.getDescription(suggestions_word_list, suggestions_doc_id, 40)
@@ -220,4 +223,4 @@ if __name__ == '__main__':
     db = database()
     db.initializeTrieTree()
     print 'Booting up web service'
-    run(app=wsgi_app, host=LANUCH_HOST,port=LANUCH_PORT, reloader=True)
+    run(app=wsgi_app, host=TEST_HOST,port=TEST_PORT, reloader=True)
