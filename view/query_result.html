@@ -55,7 +55,7 @@
         </div>
         % end
         % if url is not None:
-          %for (url, title) in url[10*(page-1):10*page]:
+          %for (url, title, description) in url[10*(page-1):10*page]:
           <div class = "box card g">
               <div class = "result">
                     <h3 class = "r">
@@ -69,10 +69,7 @@
               </div>   
             <hr>
             <div id = "url_content">
-              <script type="text/javascript"> 
-              document.write("web content...... need from back end ......");
-
-              </script>
+              {{description}}
             </div>
           </div>
           %end

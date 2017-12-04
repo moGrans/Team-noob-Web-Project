@@ -264,11 +264,10 @@ class database():
         Find the ranked list of urls related to a word
         If such word not found, None returned
         :word: str
-        :return: list(str)
+        :return: list( (str,str) )
                  None       # if not found
         """
         wordRelated = self.lexiconDB.find_one({'word': word})
-
 
         if not wordRelated:
             return None
@@ -283,7 +282,9 @@ class database():
         result = {}
         for eachID in relatedDocIDs:
             found = self.docIndexDB.find_one({'doc_id':eachID})
-            result[ (found['url'], found['doc_title']) ] = found['doc_score']
+            description = self.getDescriptionForOneWord(word, found['url'])
+            result[ (found['url'], found['doc_title'], description) ] = found['doc_score']
+
 
         sortedURL = sorted(result.items(), key=operator.itemgetter(1))
         sortedURL = [ele[0] for ele in sortedURL]
