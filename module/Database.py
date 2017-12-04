@@ -7,14 +7,14 @@ from trie import Trie
 
 from itertools import product
 
-# CONNECTION_STR = \
-#     "mongodb://Gransy:dfvGhUj068c9YqiA\
-# @cluster0-shard-00-00-chyjq.mongodb.net:27017,\
-# cluster0-shard-00-01-chyjq.mongodb.net:27017,\
-# cluster0-shard-00-02-chyjq.mongodb.net:27017/\
-# test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
+CONNECTION_STR = \
+    "mongodb://Gransy:dfvGhUj068c9YqiA\
+@cluster0-shard-00-00-chyjq.mongodb.net:27017,\
+cluster0-shard-00-01-chyjq.mongodb.net:27017,\
+cluster0-shard-00-02-chyjq.mongodb.net:27017/\
+test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin"
 
-CONNECTION_STR = "mongodb://localhost"
+# CONNECTION_STR = "mongodb://localhost"
 
 class database():
 
@@ -40,6 +40,8 @@ class database():
         self.trie = Trie()
 
         self.spellingChecker = None
+
+        self.wordDescriptionCache = {}
 
         self.WORD_SEPARATORS = re.compile(r'\s|\n|\r|\t|[^a-zA-Z0-9\-_]')
 
@@ -296,6 +298,7 @@ class database():
         for eachLexicon in self.lexiconDB.find({}):
             self.trie.insert(eachLexicon['word'])
             words.append(eachLexicon['word'])
+            self.wordDescriptionCache[eachLexicon['word_id']] = eachLexicon['word']
 
         self.spellingChecker = autocorrect(words)
 
@@ -371,11 +374,14 @@ class database():
 
             contentOrder = result['doc_content']
 
+            if max_index >= len(contentOrder):
+                max_index = len(contentOrder) - 1
+
             description = ''
 
-            for contentIndex in range(min_index, max_index + 1):
+            for contentIndex in range(min_index, max_index+1):
 
-                description += (self.lexiconDB.find_one({'word_id':contentOrder[contentIndex]}))['word'] + ' '
+                description += self.wordDescriptionCache[contentOrder[contentIndex]] + ' '
 
             description += '...'
 
@@ -418,8 +424,8 @@ class database():
             doc_id_candidate.intersection_update(result['doc_ids'])
         
         suggestions_word_pair = []
-        
-        suggestions_doc_id = []
+
+        suggestions_comb = []
 
         for doc_id in list(doc_id_candidate):
             L2_word_appearance_candidate = []
@@ -436,8 +442,17 @@ class database():
 
             suggestions_word_pair.append(indoc_appearance_sorted[0])
 
-            suggestions_doc_id.append(doc_id)
-        
+            suggestions_comb.append( (indoc_appearance_sorted[0], doc_id) )
+
+        suggestions_comb = sorted(suggestions_comb, key=lambda comb: two_pass_variance(comb[0]))
+
+        suggestions_word_pair = []
+        suggestions_doc_id = []
+
+        for eachComb in suggestions_comb:
+            suggestions_word_pair.append(eachComb[0])
+            suggestions_doc_id.append(eachComb[1])
+
         return (suggestions_word_pair, suggestions_doc_id)
 
 
