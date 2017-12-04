@@ -79,14 +79,15 @@ def index():
 
         # Returns a list of tuple sorted by page ranks
         # tuple = ( url, title )
-        print "hahaha"
-        print splwords
         if len(splwords) == 1:
             urls = db.findRelatedPageRank(splwords[0])
-            print urls
         else:
-            suggestions_word_list, suggestions_doc_id = db.multi_word_search(splwords)
-            urls = db.getDescription(suggestions_word_list, suggestions_doc_id, 40)
+            returnVal = db.multi_word_search(splwords)
+            if returnVal is not None:
+                suggestions_word_list, suggestions_doc_id = returnVal[0], returnVal[1]
+                urls = db.getDescription(suggestions_word_list, suggestions_doc_id, 40)
+            else:
+                urls = db.findRelatedPageRank(splwords[0])
 
         if page is None or page is "":
             page = 1
