@@ -1,22 +1,20 @@
-# Team-noob-Web-Project
-A CSC326 project
+# Stinky Fish
+CSC326 Final Project
 
-## Check List
-### Backend
-- Inverted Index  &times;
-- Resolved Index  &times;
-- Lexicon         &times;
-- Document Index  &times;
-- Crawler tests   &times;
+## Run on local machine
+1. cd /Team-noob-Web-Project
+1. python web.py
+1. Go to url: http://localhost:8080
 
-### FrontEnd
-* Spell Correction
-* Autocompletion 
-* Multi-word searching 
-* Search suggestion  (BIG DATA???)
-* Mobile Page
-* Zhu JianWen search result page (who is the most handsome man in the world?)
-* Animated Logo at the bottom of page
-* click on search bar show 5 past search history
-* Log in button
-* Display few lines of search research of each link
+## Deploy
+1. cd /Team-noob-Web-Project/module
+1. python deploy.py
+- make sure you have credentails under the directory at /.aws
+
+## Undeploy
+1. cd /Team-noob-Web-Project/module
+1. python undeploy.py
+
+## Run on AWS
+# url: 
+# DNS: 
