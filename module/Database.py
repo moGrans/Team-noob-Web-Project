@@ -461,7 +461,10 @@ class database():
             word_ids.add(word_id)
 
             doc_id_candidate.intersection_update(result['doc_ids'])
-        
+
+        if len(word_ids) == 1:
+            return None
+
         suggestions_word_pair = []
 
         suggestions_comb = []
