@@ -223,4 +223,4 @@ if __name__ == '__main__':
     db = database()
     db.initializeTrieTree()
     print 'Booting up web service'
-    run(app=wsgi_app, host=TEST_HOST,port=TEST_PORT, reloader=True)
+    run(app=wsgi_app, host=LAUNCH_HOST,port=LAUNCH_PORT, reloader=True)
