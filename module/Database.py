@@ -352,6 +352,35 @@ class database():
         # After gained the in doc index of each word, sort by the variance
         suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
 
+    def getDescriptionForOneWord(self, word, URL):
+
+        result_word = self.lexiconDB.find_one({'word':word})
+
+        word_id = result_word['word_id']
+
+        result_doc = self.docIndexDB.find_one({'url':URL})
+
+        doc_id = result_doc['doc_id']
+
+        contentOrder = result_doc['doc_content']
+
+        result_wordAppearance = self.wordAppearanceDB.find_one({'word_id':word_id})
+
+        word_id_index = result_wordAppearance['pos_collect'][doc_id][0]
+
+        end_index = word_id_index + 30
+
+        if end_index >= len(contentOrder):
+            end_index = len(contentOrder) - 1
+
+        description = ''
+
+        for contentIndex in range(word_id_index, end_index + 1):
+            description += self.wordDescriptionCache[contentOrder[contentIndex]] + ' '
+
+        description += '...'
+
+        return description
 
     def getDescription(self, suggestions_word_pair, suggestions_doc_id, nWords=40):
         """
@@ -362,8 +391,10 @@ class database():
         :param nWords: int
         :return: list(str)
         """
-        descriptions = []
-        URLs = []
+        # descriptions = []
+        # URLs = []
+
+        returnResult = []
 
         for index in range(len(suggestions_word_pair)):
 
@@ -385,10 +416,11 @@ class database():
 
             description += '...'
 
-            descriptions.append(description)
-            URLs.append(result['url'])
+            temp = (result['url'], result['doc_title'], description)
 
-        return descriptions, URLs
+            returnResult.append(temp)
+
+        return returnResult
 
     def multi_word_search(self, list_of_words):
         
