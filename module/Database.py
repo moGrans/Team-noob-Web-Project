@@ -351,20 +351,37 @@ class database():
         suggestions = sorted(product(in_doc_index_candidate), key=two_pass_variance)
 
 
-    def getDescription(self, word_ids, doc_id, nWords):
+    def getDescription(self, suggestions_word_pair, suggestions_doc_id, nWords=40):
         """
         Depending on the given word id and doc id, return a string has
         a length specified by nWords
-        :param word_ids: int
-        :param doc_id: int
+        :param word_ids: list(int)
+        :param doc_id: list(int)
         :param nWords: int
-        :param nWords: int
-        :return: str
+        :return: list(str)
         """
+        descriptions = []
 
-        # result = self.wordAppearanceDB.find_one({'word_id':word_id})
-        pass
+        for index in range(len(suggestions_word_pair)):
 
+            min_index = min(suggestions_word_pair[index])
+            max_index = min_index + nWords
+
+            result = self.docIndexDB.find_one({'doc_id':suggestions_doc_id[index]})
+
+            contentOrder = result['doc_content']
+
+            description = ''
+
+            for contentIndex in range(min_index, max_index + 1):
+
+                description += (self.lexiconDB.find_one({'word_id':contentOrder[contentIndex]}))['word'] + ' '
+
+            description += '...'
+
+            descriptions.append(description)
+
+        return descriptions
 
     def multi_word_search(self, list_of_words):
         
@@ -374,10 +391,10 @@ class database():
 
         word_ids = set()
 
-        word_id = list_of_words[0]
+        word_id = self.findWord(list_of_words[0])
 
         # First fill the candidate with the first word
-        result = self.invertedIndexDB.find_one({'word_id':self.findWord(word_id)})
+        result = self.invertedIndexDB.find_one({'word_id':word_id})
 
         word_ids.add(word_id)
         
@@ -386,11 +403,11 @@ class database():
 
         doc_id_candidate.update(result['doc_ids'])
 
-        for word in list_of_words:
+        for word in list_of_words[1:]:
             
             word_id = self.findWord(word)
 
-            result = self.invertedIndexDB.find_one({'word_id':})
+            result = self.invertedIndexDB.find_one({'word_id':word_id})
 
             if result == None:
                 has_none_result = True
@@ -402,7 +419,7 @@ class database():
         
         suggestions_word_pair = []
         
-        comb_to_doc_id_LU = {}
+        suggestions_doc_id = []
 
         for doc_id in list(doc_id_candidate):
             L2_word_appearance_candidate = []
@@ -410,7 +427,7 @@ class database():
             word_appearance_temp = []
 
             for word_id in list(word_ids):
-                result = self.wordAppearanceDB.find_one({'word_id'})
+                result = self.wordAppearanceDB.find_one({'word_id':word_id})
                 pos_collect = result['pos_collect']
                 pos_collect_doc = pos_collect[result['doc_id_collect'].index(doc_id)]
                 word_appearance_temp.append(pos_collect_doc)
@@ -419,12 +436,7 @@ class database():
 
             suggestions_word_pair.append(indoc_appearance_sorted[0])
 
-            comb_to_doc_id_LU[indoc_appearance_sorted[0]] = doc_id
-        
-        suggestions_doc_id = []
-
-        for eachSuggest in suggestion_word_pair:
-            suggestions_doc_id.append(comb_to_doc_id_LU[eachSuggest])
+            suggestions_doc_id.append(doc_id)
         
         return (suggestions_word_pair, suggestions_doc_id)
 
