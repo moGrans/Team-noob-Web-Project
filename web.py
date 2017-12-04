@@ -12,8 +12,8 @@ from module import kw_his
 
 TEST_HOST = 'localhost'
 TEST_PORT = '8080'
-LANUCH_HOST = '0.0.0.0'
-LANUCH_PORT = '80'
+LAUNCH_HOST = '0.0.0.0'
+LAUNCH_PORT = '80'
 # Redirect url to be changed if instance is to be relauched
 REDIRECT_URI = '0.0.0.0:80/redirect'
 
