@@ -12,8 +12,8 @@ from module import kw_his
 
 TEST_HOST = 'localhost'
 TEST_PORT = '8080'
-LANUCH_HOST = '0.0.0.0'
-LANUCH_PORT = '80'
+LAUNCH_HOST = '0.0.0.0'
+LAUNCH_PORT = '80'
 # Redirect url to be changed if instance is to be relauched
 REDIRECT_URI = '0.0.0.0:80/redirect'
 
@@ -224,4 +224,4 @@ if __name__ == '__main__':
     db = database()
     db.initializeTrieTree()
     print 'Booting up web service'
-    run(app=wsgi_app, host=TEST_HOST,port=TEST_PORT, reloader=True)
+    run(app=wsgi_app, host=LAUNCH_HOST,port=LAUNCH_PORT, reloader=True)
