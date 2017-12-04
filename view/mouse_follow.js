@@ -1,5 +1,4 @@
 window.onload = function() {
-	/************************ fish bone **************************/
 	var bone = document.getElementById("mouse_follower");
 	document.addEventListener("mousemove", getMouse); 
 
@@ -38,7 +37,6 @@ window.onload = function() {
           bone.setAttribute("class", "mouse_follow_right");
         } else {
           bone.setAttribute("class", "mouse_follow_left");        
-        }		
+        }	
 	}
 }
-
