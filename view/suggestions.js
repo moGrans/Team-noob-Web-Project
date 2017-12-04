@@ -1,4 +1,4 @@
-var historyCount = 30; 
+var historyCount = 300; 
 
 function setHistory() {  
     $('#acomp').hide();
@@ -29,7 +29,7 @@ function  delHistory() {
   $("#acomp").hide();
 }  
 
-function  getHistory(){  
+function  getSuggestions(){  
     var keyWords = $.cookie('keyWord');  
     if (keyWords) { 
         $("#acomp").show();
@@ -50,13 +50,18 @@ function  getHistory(){
             } else {
                 var i = length - 1;
                 var n = 0; 
-                while (i >= 0 && n < 3) {
+                var relatedKeys = [];
+                while (i >= 0) {
                     if (keys[i].startsWith($("#inputtable").val())) {
-                        var thiskey = keys[i].replace($("#inputtable").val(), '<b>'+$("#inputtable").val()+'</b>')
-                        htmlString += '<li class = "entries his" role="presentation" onclick="clickSuggs(this)">' + thiskey + "</li>";  
+                        relatedKeys.push(keys[i]);
                         n++;
                     }
                     i--;
+                }
+                relatedKeys.sort();
+                for (i = 0; i < relatedKeys.length && i < 3; ++i) {
+                    var thiskey = relatedKeys[i].replace($("#inputtable").val(), '<b>'+$("#inputtable").val()+'</b>')
+                    htmlString += '<li class = "entries his" role="presentation" onclick="clickSuggs(this)">' + thiskey + "</li>"; 
                 }
             }
             if (htmlString == '') {

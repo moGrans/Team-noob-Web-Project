@@ -7,7 +7,7 @@
 
       <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 		  <script src="/view/jquery.cookie.js"></script>
-      <script src="/view/history.js"></script>
+      <script src="/view/suggestions.js"></script>
   </head>
 
   <script>
@@ -28,7 +28,7 @@
         <div class = "box main">
           <form method="get" action="/" class="sform" onsubmit="setHistory()">
             <div class = "searchbox">
-                <input type='text' name='keywords' autocomplete='off' id='inputtable' onfocus="getHistory()" onkeyup="getHistory()" value="{{keywords}}">
+                <input type='text' name='keywords' autocomplete='off' id='inputtable' onfocus="getSuggestions()" onkeyup="getSuggestions()" value="{{keywords}}">
                 <input type='submit' value='Search' id="searchbutton">
             </div>
             <div id = "acomp">

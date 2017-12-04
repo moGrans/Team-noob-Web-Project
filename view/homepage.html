@@ -5,7 +5,7 @@
 		  <link rel="stylesheet" href="/static/css/homepage.css">
 		  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 		  <script src="/view/jquery.cookie.js"></script>
-		  <script src="/view/history.js"></script>
+		  <script src="/view/suggestions.js"></script>
   	</head>
 
   	<script>
@@ -92,7 +92,7 @@
 			<div class = "box main">
 				<form method="get" action="/" class="sform" onsubmit="setHistory()">
 					<div class = "searchbox">
-							<input type='text' name='keywords' autocomplete='off' id='inputtable' onfocus="getHistory()" onkeyup="getHistory()">
+							<input type='text' name='keywords' autocomplete='off' id='inputtable' onfocus="getSuggestions()" onkeyup="getSuggestions()">
 							<input type='submit' value='Search' id="searchbutton">
 					</div>
 					<div id = "acomp">
